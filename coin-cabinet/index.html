@@ -502,41 +502,40 @@
     .cards {
       display: grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 14px;
+      gap: 18px;
     }
 
     .card {
-      padding: 18px;
-      border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      padding: 16px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
       border: 1px solid rgba(255,255,255,.08);
-      cursor: pointer;
       transition: .22s ease;
       display: grid;
-      gap: 15px;
+      gap: 14px;
+      align-content: start;
     }
 
-    .card-top {
-      display: flex;
-      gap: 14px;
-      align-items: center;
+    .card-main {
+      display: grid;
+      gap: 12px;
     }
 
     .card-coin {
-      flex: 0 0 68px;
-      width: 68px;
+      width: 100%;
       aspect-ratio: 1;
-      border-radius: 50%;
+      border-radius: 28px;
       display: grid;
       place-items: center;
       text-align: center;
-      font-size: 11px;
+      font-size: 20px;
       font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: .08em;
+      line-height: 1.1;
+      letter-spacing: .1em;
       text-transform: uppercase;
       border: 1px solid rgba(255,255,255,.26);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.48), inset 0 -8px 18px rgba(0,0,0,.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.48), inset 0 -16px 28px rgba(0,0,0,.18);
+      min-height: 0;
     }
 
     .card-coin.silver {
@@ -549,16 +548,14 @@
       background: linear-gradient(145deg, rgba(255,235,155,.97), rgba(199,146,47,.93));
     }
 
-
     .card-media {
-      flex: 0 0 68px;
-      width: 68px;
+      width: 100%;
       aspect-ratio: 1;
-      border-radius: 18px;
+      border-radius: 28px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      box-shadow: 0 12px 28px rgba(0,0,0,.24);
+      box-shadow: 0 18px 38px rgba(0,0,0,.28);
     }
 
     .card-media img {
@@ -570,16 +567,79 @@
 
     .card-name {
       margin: 0;
-      font-size: 18px;
-      line-height: 1.22;
+      font-size: 16px;
+      line-height: 1.28;
       letter-spacing: -.02em;
+    }
+
+    .card-meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-more {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .card-more:hover {
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+    }
+
+    .card-more span:first-child {
+      font-size: 13px;
+      letter-spacing: .04em;
+    }
+
+    .chevron {
+      color: var(--muted);
+      transition: transform .2s ease;
+      font-size: 14px;
+    }
+
+    .card-more[aria-expanded="true"] .chevron {
+      transform: rotate(180deg);
+    }
+
+    .card-details {
+      display: none;
+      gap: 12px;
+      padding-top: 2px;
+    }
+
+    .card-details.open {
+      display: grid;
     }
 
     .card-sub {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
       color: var(--muted);
       font-size: 13px;
     }
@@ -624,6 +684,22 @@
       font-size: 18px;
       letter-spacing: -.04em;
       line-height: 1.05;
+    }
+
+    .card-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-links a {
+      text-decoration: none;
+      font-size: 13px;
+      color: var(--accent);
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(148,183,255,.10);
+      border: 1px solid rgba(148,183,255,.16);
     }
 
     .drawer {
@@ -1162,36 +1238,54 @@
         coin.mint ? makeTag(`Mint ${coin.mint}`) : ''
       ].filter(Boolean).join('');
 
+      const links = [
+        coin.numista ? `<a href="${coin.numista}" target="_blank" rel="noreferrer">Numista ↗</a>` : '',
+        coin.coin_link ? `<a href="${coin.coin_link}" target="_blank" rel="noreferrer">Katz ↗</a>` : ''
+      ].filter(Boolean).join('');
+
       const media = coin.image_url
         ? `<div class="card-media"><img src="${coin.image_url}" alt="${coin.name}" loading="lazy" referrerpolicy="no-referrer"></div>`
         : `<div class="card-coin ${materialClass}">${coinInitials(coin)}<br>${coin.year || 'n/a'}</div>`;
 
       return `
-        <article class="card" data-id="${coin.id}" tabindex="0" role="button" aria-label="Open ${coin.name}">
-          <div class="card-top">
+        <article class="card" data-id="${coin.id}">
+          <div class="card-main">
             ${media}
             <div>
               <h3 class="card-name">${coin.name}</h3>
-              <div class="card-sub">${tags}</div>
             </div>
-          </div>
-          <div class="metric-grid">
-            <div class="metric">
-              <span>Known spend</span>
-              <strong>${typeof coin.spent_eur === 'number' ? formatMoneyPrecise(coin.spent_eur) : (coin.spent_raw || '—')}</strong>
-            </div>
-            <div class="metric">
-              <span>Metal value</span>
-              <strong>${formatMoneyPrecise(coin.metal_value_eur)}</strong>
-            </div>
-            <div class="metric">
-              <span>Weight</span>
-              <strong>${coin.weight_g ? `${formatNumber(coin.weight_g)} g` : '—'}</strong>
-            </div>
-            <div class="metric">
+            <div class="card-meta-line">
               <span>Mintage</span>
               <strong>${coin.mintage || '—'}</strong>
             </div>
+          </div>
+          <div class="card-actions">
+            <button class="card-more" type="button" data-id="${coin.id}" aria-expanded="false" aria-controls="details-${coin.id}">
+              <span>More</span>
+              <span class="chevron">▾</span>
+            </button>
+          </div>
+          <div class="card-details" id="details-${coin.id}" hidden>
+            <div class="card-sub">${tags}</div>
+            <div class="metric-grid">
+              <div class="metric">
+                <span>Known spend</span>
+                <strong>${typeof coin.spent_eur === 'number' ? formatMoneyPrecise(coin.spent_eur) : (coin.spent_raw || '—')}</strong>
+              </div>
+              <div class="metric">
+                <span>Metal value</span>
+                <strong>${formatMoneyPrecise(coin.metal_value_eur)}</strong>
+              </div>
+              <div class="metric">
+                <span>Weight</span>
+                <strong>${coin.weight_g ? `${formatNumber(coin.weight_g)} g` : '—'}</strong>
+              </div>
+              <div class="metric">
+                <span>Year</span>
+                <strong>${coin.year || '—'}</strong>
+              </div>
+            </div>
+            ${links ? `<div class="card-links">${links}</div>` : ''}
           </div>
         </article>
       `;
@@ -1203,14 +1297,13 @@
       el.cardsGrid.innerHTML = filtered.map(cardMarkup).join('');
       el.emptyState.hidden = filtered.length > 0;
 
-      el.cardsGrid.querySelectorAll('.card').forEach(card => {
-        const open = () => openDrawer(card.dataset.id);
-        card.addEventListener('click', open);
-        card.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            open();
-          }
+      el.cardsGrid.querySelectorAll('.card-more').forEach(button => {
+        button.addEventListener('click', () => {
+          const details = document.getElementById(button.getAttribute('aria-controls'));
+          const expanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', String(!expanded));
+          details.hidden = expanded;
+          details.classList.toggle('open', !expanded);
         });
       });
     }
