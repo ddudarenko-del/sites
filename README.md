@@ -9,3 +9,4 @@ Public static hosting repo for Hermes-built sites on GitHub Pages.
 ## Publishing
 GitHub Pages should be configured to publish from `main` and `/ (root)`.
 - `coin-cabinet/` — Denis Coin Cabinet
+- `form2-history-final-quiz/` — Form 2 History Final Quiz (Migration & Medicine)

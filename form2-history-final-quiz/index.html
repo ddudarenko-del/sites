@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form 2 History Final Quiz — Migration & Medicine</title>
+  <meta name="description" content="A final-exam-style Form 2 history quiz on migration and medicine through history." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(12, 18, 37, 0.82);
+      --panel-strong: #121a34;
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.14);
+      --text: #eef3ff;
+      --muted: #aab8de;
+      --accent: #7dd3fc;
+      --accent-2: #c4b5fd;
+      --good: #34d399;
+      --bad: #fb7185;
+      --warn: #fbbf24;
+      --shadow: 0 24px 60px rgba(0,0,0,0.35);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(125, 211, 252, 0.18), transparent 34%),
+        radial-gradient(circle at top right, rgba(196, 181, 253, 0.18), transparent 30%),
+        linear-gradient(160deg, #070b16 0%, #101936 52%, #09101e 100%);
+      padding: 24px;
+    }
+
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero, .quiz-card, .section-card, .result-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: var(--radius-lg);
+    }
+
+    .hero {
+      padding: 28px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border: 1px solid rgba(125, 211, 252, 0.25);
+      background: rgba(125, 211, 252, 0.08);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p, .meta, .section-card p, .result-card p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .quiz-card {
+      padding: 24px;
+      display: none;
+      gap: 20px;
+    }
+
+    .quiz-card.active,
+    .results.active,
+    .start.active {
+      display: grid;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.28s ease;
+    }
+
+    .section-card {
+      padding: 18px;
+      background: linear-gradient(145deg, rgba(125,211,252,0.08), rgba(196,181,253,0.08));
+    }
+
+    .question-title {
+      font-size: clamp(1.35rem, 2.5vw, 2rem);
+      line-height: 1.2;
+      margin-top: 8px;
+      margin-bottom: 6px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .option {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      min-height: 72px;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .option:hover, .option:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(125,211,252,0.45);
+      background: rgba(125,211,252,0.11);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      outline: none;
+    }
+
+    .option.correct {
+      background: rgba(52, 211, 153, 0.16);
+      border-color: rgba(52, 211, 153, 0.7);
+    }
+
+    .option.wrong {
+      background: rgba(251, 113, 133, 0.16);
+      border-color: rgba(251, 113, 133, 0.7);
+    }
+
+    .option:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .feedback {
+      min-height: 58px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      padding: 14px 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .feedback.good { border-color: rgba(52,211,153,0.35); color: #d8fff0; }
+    .feedback.bad { border-color: rgba(251,113,133,0.35); color: #ffe0e6; }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+    }
+
+    .btn:hover, .btn:focus-visible { transform: translateY(-1px); outline: none; }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #07101f;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .results {
+      display: none;
+      gap: 18px;
+    }
+
+    .result-card {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .score-ring {
+      width: 164px;
+      height: 164px;
+      border-radius: 50%;
+      margin: 4px auto 8px;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--accent) var(--fill, 0%), rgba(255,255,255,0.08) 0);
+      position: relative;
+    }
+
+    .score-ring::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      background: #0c1430;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .score-ring strong, .score-ring span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      text-align: center;
+    }
+
+    .score-ring strong {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .summary-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .summary-item strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    .review-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-item {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .review-item.good { border-color: rgba(52,211,153,0.35); }
+    .review-item.bad { border-color: rgba(251,113,133,0.35); }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 740px) {
+      body { padding: 14px; }
+      .hero, .quiz-card, .result-card { padding: 18px; }
+      .options { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero start active" id="startScreen">
+      <span class="eyebrow">Form 2 · History</span>
+      <h1>Final Exam Style Quiz</h1>
+      <p>This quiz matches your topic: <strong>Migration</strong> and <strong>Medicine Through History</strong>. It uses clickable answer buttons, keeps score automatically, and gives you corrections at the end.</p>
+      <div class="hero-grid">
+        <article class="mini-card">
+          <strong>Sections</strong>
+          <span class="meta">Migration + Medicine</span>
+        </article>
+        <article class="mini-card">
+          <strong>Questions</strong>
+          <span class="meta">14 exam-style questions</span>
+        </article>
+        <article class="mini-card">
+          <strong>Format</strong>
+          <span class="meta">Buttons, instant feedback, final review</span>
+        </article>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="startBtn">Start quiz</button>
+      </div>
+    </section>
+
+    <section class="quiz-card" id="quizCard" aria-live="polite">
+      <div class="topbar">
+        <span class="pill" id="sectionPill">Section</span>
+        <span class="pill" id="questionCounter">Question 1 of 14</span>
+      </div>
+      <div class="progress"><span id="progressBar"></span></div>
+      <article class="section-card">
+        <p id="questionType">Multiple choice</p>
+        <h2 class="question-title" id="questionText"></h2>
+        <p id="questionHint"></p>
+      </article>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">Choose your answer.</div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="restartBtn">Restart</button>
+        <button class="btn btn-primary" id="nextBtn" disabled>Next question</button>
+      </div>
+    </section>
+
+    <section class="results" id="results">
+      <article class="result-card">
+        <span class="eyebrow">Results</span>
+        <div class="score-ring" id="scoreRing" style="--fill: 0%;">
+          <div>
+            <strong id="scoreValue">0/14</strong>
+            <span class="muted" id="scoreLabel">Keep going</span>
+          </div>
+        </div>
+        <h2 id="scoreHeadline">You finished the quiz.</h2>
+        <p id="scoreText">Your full score and review will appear here.</p>
+        <div class="summary-grid" id="summaryGrid"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="tryAgainBtn">Try again</button>
+        </div>
+      </article>
+      <article class="result-card">
+        <h3>Answer review</h3>
+        <div class="review-list" id="reviewList"></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'What is migration?',
+        hint: 'Think about moving people.',
+        options: [
+          'Moving from one place to another',
+          'Only travelling for a holiday',
+          'Building a new hospital',
+          'Changing your school subject'
+        ],
+        answer: 0,
+        explanation: 'Migration means people move from one place to another, either within a country or to a different country.'
+      },
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'Which of these is a push factor?',
+        hint: 'A push factor makes people want to leave.',
+        options: [
+          'Safer jobs',
+          'War and danger',
+          'Better schools',
+          'Higher wages'
+        ],
+        answer: 1,
+        explanation: 'War and danger push people away from a place.'
+      },
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'Which of these is a pull factor?',
+        hint: 'A pull factor attracts people to a new place.',
+        options: [
+          'Famine',
+          'Persecution',
+          'Good job opportunities',
+          'Natural disaster'
+        ],
+        answer: 2,
+        explanation: 'Good job opportunities can attract people and pull them to a new area.'
+      },
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'Why did many people move to cities during the Industrial Revolution?',
+        hint: 'Think about work.',
+        options: [
+          'To work in factories',
+          'To become kings and queens',
+          'To avoid all new machines',
+          'To study ancient medicine'
+        ],
+        answer: 0,
+        explanation: 'Factories created jobs, so many people moved from the countryside to towns and cities.'
+      },
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'Which statement is true about migration?',
+        hint: 'Read all options carefully.',
+        options: [
+          'Migration only happened in modern times',
+          'Migration can happen for work, safety, or family reasons',
+          'Migration always means moving forever',
+          'Migration only happens between continents'
+        ],
+        answer: 1,
+        explanation: 'People migrate for many reasons such as work, safety, family, or better living conditions.'
+      },
+      {
+        section: 'Migration',
+        type: 'Multiple choice',
+        question: 'If a family leaves because there is not enough food, that reason is called:',
+        hint: 'Is it pushing them out or pulling them in?',
+        options: [
+          'A pull factor',
+          'A push factor',
+          'A discovery',
+          'A vaccination'
+        ],
+        answer: 1,
+        explanation: 'A lack of food is a push factor because it forces people to leave.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'What does the germ theory say?',
+        hint: 'This changed ideas about disease.',
+        options: [
+          'Diseases are caused by evil spirits only',
+          'Diseases are caused by tiny living germs',
+          'All illness comes from bad weather',
+          'Doctors should never wash their hands'
+        ],
+        answer: 1,
+        explanation: 'Germ theory explained that microorganisms can cause disease.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'Who is strongly linked with vaccination against smallpox?',
+        hint: 'A famous medical pioneer.',
+        options: [
+          'Edward Jenner',
+          'Hippocrates',
+          'Louis Pasteur',
+          'Florence Nightingale'
+        ],
+        answer: 0,
+        explanation: 'Edward Jenner developed the early smallpox vaccination.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'Why is Florence Nightingale important?',
+        hint: 'Think about hospitals and nursing.',
+        options: [
+          'She invented X-rays',
+          'She improved hygiene and nursing care',
+          'She discovered penicillin',
+          'She ruled a medieval town'
+        ],
+        answer: 1,
+        explanation: 'Florence Nightingale improved cleanliness, nursing standards, and hospital care.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'Which scientist helped prove that germs can spread disease?',
+        hint: 'Connected to pasteurisation too.',
+        options: [
+          'Louis Pasteur',
+          'Galen',
+          'Avicenna',
+          'William Harvey'
+        ],
+        answer: 0,
+        explanation: 'Louis Pasteur helped develop germ theory and showed the role of microbes.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'What was a major problem in many hospitals before hygiene improved?',
+        hint: 'Think about cleanliness.',
+        options: [
+          'Too much fresh air',
+          'Dirty conditions and infection',
+          'Too many vaccinations',
+          'A shortage of kings'
+        ],
+        answer: 1,
+        explanation: 'Dirty hospitals helped infections spread and made patients even sicker.'
+      },
+      {
+        section: 'Medicine',
+        type: 'Multiple choice',
+        question: 'Penicillin is important because it:',
+        hint: 'It helped doctors fight infections.',
+        options: [
+          'Stopped migration',
+          'Was the first microscope',
+          'Helped kill bacteria',
+          'Created the Black Death'
+        ],
+        answer: 2,
+        explanation: 'Penicillin was one of the first antibiotics and helped treat bacterial infections.'
+      },
+      {
+        section: 'Mixed Challenge',
+        type: 'Exam practice',
+        question: 'Which answer shows one migration idea and one medicine idea correctly matched?',
+        hint: 'You need both parts to be right.',
+        options: [
+          'Push factor = better wages; Jenner = nursing reform',
+          'Pull factor = job opportunities; Pasteur = germ theory',
+          'Migration = only tourism; Nightingale = vaccination',
+          'Push factor = safer housing; penicillin = a type of city'
+        ],
+        answer: 1,
+        explanation: 'Job opportunities are a pull factor, and Pasteur is linked to germ theory.'
+      },
+      {
+        section: 'Mixed Challenge',
+        type: 'Exam practice',
+        question: 'What is the best reason why medicine improved over time?',
+        hint: 'Think about change across many years.',
+        options: [
+          'People stopped asking questions',
+          'Better science, observation, and new discoveries',
+          'Doctors refused to learn new ideas',
+          'Diseases disappeared by themselves'
+        ],
+        answer: 1,
+        explanation: 'Medicine improved because scientists and doctors observed carefully, tested ideas, and made discoveries.'
+      }
+    ];
+
+    const startScreen = document.getElementById('startScreen');
+    const quizCard = document.getElementById('quizCard');
+    const results = document.getElementById('results');
+    const sectionPill = document.getElementById('sectionPill');
+    const questionCounter = document.getElementById('questionCounter');
+    const questionType = document.getElementById('questionType');
+    const questionText = document.getElementById('questionText');
+    const questionHint = document.getElementById('questionHint');
+    const optionsEl = document.getElementById('options');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressBar = document.getElementById('progressBar');
+    const reviewList = document.getElementById('reviewList');
+    const summaryGrid = document.getElementById('summaryGrid');
+    const scoreRing = document.getElementById('scoreRing');
+    const scoreValue = document.getElementById('scoreValue');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const scoreHeadline = document.getElementById('scoreHeadline');
+    const scoreText = document.getElementById('scoreText');
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+    let answers = [];
+
+    function startQuiz() {
+      current = 0;
+      score = 0;
+      answered = false;
+      answers = [];
+      startScreen.classList.remove('active');
+      results.classList.remove('active');
+      quizCard.classList.add('active');
+      renderQuestion();
+    }
+
+    function restartQuiz() {
+      startScreen.classList.add('active');
+      quizCard.classList.remove('active');
+      results.classList.remove('active');
+      progressBar.style.width = '0%';
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = questions[current];
+      sectionPill.textContent = q.section;
+      questionCounter.textContent = `Question ${current + 1} of ${questions.length}`;
+      questionType.textContent = q.type;
+      questionText.textContent = q.question;
+      questionHint.textContent = q.hint;
+      progressBar.style.width = `${(current / questions.length) * 100}%`;
+      nextBtn.disabled = true;
+      feedback.className = 'feedback';
+      feedback.textContent = 'Choose your answer.';
+      optionsEl.innerHTML = '';
+
+      q.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.className = 'option';
+        button.type = 'button';
+        button.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${option}`;
+        button.addEventListener('click', () => chooseAnswer(index));
+        optionsEl.appendChild(button);
+      });
+    }
+
+    function chooseAnswer(index) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const buttons = [...document.querySelectorAll('.option')];
+      const isCorrect = index === q.answer;
+
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.answer) btn.classList.add('correct');
+        if (i === index && !isCorrect) btn.classList.add('wrong');
+      });
+
+      if (isCorrect) {
+        score += 1;
+        feedback.className = 'feedback good';
+        feedback.innerHTML = `<strong>Correct.</strong> ${q.explanation}`;
+      } else {
+        feedback.className = 'feedback bad';
+        feedback.innerHTML = `<strong>Not quite.</strong> ${q.explanation}`;
+      }
+
+      answers.push({
+        ...q,
+        chosen: index,
+        correct: isCorrect
+      });
+
+      nextBtn.disabled = false;
+    }
+
+    function nextQuestion() {
+      current += 1;
+      if (current < questions.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function getBand(percent) {
+      if (percent >= 85) return ['Excellent work', 'You look ready for a strong exam result.'];
+      if (percent >= 70) return ['Very good', 'You know the key ideas well. Revise the mistakes once more.'];
+      if (percent >= 50) return ['Good start', 'You understand some important points, but more revision will help.'];
+      return ['Keep practising', 'Go over the answer review and try again.'];
+    }
+
+    function showResults() {
+      quizCard.classList.remove('active');
+      results.classList.add('active');
+      progressBar.style.width = '100%';
+
+      const percent = Math.round((score / questions.length) * 100);
+      const [headline, text] = getBand(percent);
+      scoreRing.style.setProperty('--fill', `${percent}%`);
+      scoreValue.textContent = `${score}/${questions.length}`;
+      scoreLabel.textContent = `${percent}%`;
+      scoreHeadline.textContent = headline;
+      scoreText.textContent = text;
+
+      const sections = ['Migration', 'Medicine', 'Mixed Challenge'];
+      summaryGrid.innerHTML = sections.map(section => {
+        const total = answers.filter(a => a.section === section).length;
+        const got = answers.filter(a => a.section === section && a.correct).length;
+        return `<div class="summary-item"><strong>${section}</strong><span class="muted">${got}/${total} correct</span></div>`;
+      }).join('');
+
+      reviewList.innerHTML = answers.map((item, idx) => {
+        const chosen = item.options[item.chosen] || 'No answer';
+        const correct = item.options[item.answer];
+        return `
+          <article class="review-item ${item.correct ? 'good' : 'bad'}">
+            <strong>${idx + 1}. ${item.question}</strong>
+            <p class="muted">Your answer: ${chosen}</p>
+            <p class="muted">Correct answer: ${correct}</p>
+            <p>${item.explanation}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startQuiz);
+    document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+    document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+    document.getElementById('tryAgainBtn').addEventListener('click', startQuiz);
+  </script>
+</body>
+</html>
