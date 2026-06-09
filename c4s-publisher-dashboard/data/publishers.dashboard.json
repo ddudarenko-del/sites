@@ -1,0 +1,934 @@
+{
+  "meta": {
+    "generated_from": "data/publishers.json",
+    "publisher_count": 41,
+    "status_counts": {
+      "active": 41
+    },
+    "safe_fields": [
+      "id",
+      "domain",
+      "status",
+      "relationship_stage",
+      "fit_status",
+      "deal_model",
+      "placement_types",
+      "niche",
+      "geo",
+      "languages",
+      "source_labels",
+      "last_contact",
+      "next_followup",
+      "visibility",
+      "created_at",
+      "updated_at"
+    ],
+    "share_policy": "No contact details, private terms, rejection reasons, or internal notes included."
+  },
+  "publishers": [
+    {
+      "id": "pub-001",
+      "domain": "girlswallowed.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-002",
+      "domain": "peggingvids.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-003",
+      "domain": "dp-vids.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-004",
+      "domain": "spanked.to",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-005",
+      "domain": "tickle.porn",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-006",
+      "domain": "diaper.porn",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-007",
+      "domain": "giantess.porn",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-008",
+      "domain": "xfights.to",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-009",
+      "domain": "fullpornxxx.net",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-010",
+      "domain": "pornzona.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-011",
+      "domain": "bondagevalley.cc",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget",
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers",
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-012",
+      "domain": "xfantazy.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-013",
+      "domain": "tabootube.xxx",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-014",
+      "domain": "bdsmstreak.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-015",
+      "domain": "giantesscity.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "widget"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshot 2026-06-09 / current widget publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-016",
+      "domain": "abbdsm.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-017",
+      "domain": "ar.skokka.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-018",
+      "domain": "femdom.today",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-019",
+      "domain": "gayxps.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-020",
+      "domain": "mybigtitsbabes.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-021",
+      "domain": "giantessa.net",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-022",
+      "domain": "yesgiantess.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-023",
+      "domain": "mybad.ca",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-024",
+      "domain": "sklavenzentrale.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-025",
+      "domain": "uniformstealingboard.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-026",
+      "domain": "ropemarks.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-027",
+      "domain": "badkity.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-028",
+      "domain": "basictek.net",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-029",
+      "domain": "seakingsfemfight.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-030",
+      "domain": "freecatfights.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-031",
+      "domain": "fapnado.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-032",
+      "domain": "rubberzone.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-033",
+      "domain": "headscissorclub.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-034",
+      "domain": "gagthegirl.net",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-035",
+      "domain": "wedgiebuddies.tk",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-036",
+      "domain": "balloonforum.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-037",
+      "domain": "synoforum.org",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-038",
+      "domain": "bdsm365.biz",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-039",
+      "domain": "wedgietube.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-040",
+      "domain": "sessiongirls.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "id": "pub-041",
+      "domain": "ticklingforum.com",
+      "status": "active",
+      "relationship_stage": "active_partner",
+      "fit_status": "approved",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": null,
+      "geo": [],
+      "languages": [],
+      "source_labels": [
+        "Denis screenshots 2026-06-09 / additional banner publishers"
+      ],
+      "last_contact": null,
+      "next_followup": null,
+      "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    }
+  ]
+}

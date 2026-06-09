@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C4S Publisher CRM Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero card">
+        <div>
+          <p class="eyebrow">C4S Publisher Hub</p>
+          <h1>CRM cockpit for publisher outreach</h1>
+          <p class="subcopy">
+            Git-backed operator view for active partners, enrichment gaps, follow-up scheduling,
+            and sanitized reporting.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="hero-chip">Git = source of truth</div>
+          <div class="hero-chip hero-chip-accent">Share layer = sanitized</div>
+          <p class="hero-note" id="heroNote">
+            Loading publisher coverage and pipeline health…
+          </p>
+        </div>
+      </header>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="workspace">
+        <div class="main-column">
+          <section class="card section-card">
+            <div class="section-head">
+              <div>
+                <p class="section-kicker">Pipeline</p>
+                <h2>Relationship stages</h2>
+              </div>
+              <button class="ghost-button" id="resetStageButton" type="button">Reset stage filter</button>
+            </div>
+            <div class="pipeline-board" id="pipelineBoard"></div>
+          </section>
+
+          <section class="card section-card">
+            <div class="section-head">
+              <div>
+                <p class="section-kicker">Action queue</p>
+                <h2>What needs attention</h2>
+              </div>
+              <button class="ghost-button" id="resetQueueButton" type="button">Reset queue</button>
+            </div>
+            <div class="queue-grid" id="queueGrid"></div>
+          </section>
+
+          <section class="card controls">
+            <div class="view-strip" id="viewStrip"></div>
+            <div class="control-grid">
+              <label>
+                <span>Search domain</span>
+                <input id="searchInput" type="search" placeholder="Search publishers..." />
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="statusFilter">
+                  <option value="all">All statuses</option>
+                </select>
+              </label>
+              <label>
+                <span>Placement</span>
+                <select id="placementFilter">
+                  <option value="all">All placements</option>
+                </select>
+              </label>
+              <label>
+                <span>Stage</span>
+                <select id="stageFilter">
+                  <option value="all">All stages</option>
+                </select>
+              </label>
+              <label>
+                <span>Sort</span>
+                <select id="sortFilter">
+                  <option value="updated_desc">Recently updated</option>
+                  <option value="next_followup_asc">Next follow-up</option>
+                  <option value="last_contact_desc">Last contact</option>
+                  <option value="domain_asc">Domain A → Z</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="table-wrap card">
+            <div class="table-head">
+              <div>
+                <p class="section-kicker">Publisher register</p>
+                <h2>Operational list</h2>
+              </div>
+              <div class="table-head-actions">
+                <p id="resultCount">Loading…</p>
+                <button class="ghost-button" id="clearFiltersButton" type="button">Clear all filters</button>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Publisher</th>
+                    <th>Coverage</th>
+                    <th>Status</th>
+                    <th>Stage</th>
+                    <th>Placements</th>
+                    <th>Deal model</th>
+                    <th>Last touch</th>
+                    <th>Next follow-up</th>
+                    <th>Sources</th>
+                  </tr>
+                </thead>
+                <tbody id="publisherTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-column">
+          <section class="card side-card" id="overviewCard"></section>
+          <section class="card side-card" id="coverageCard"></section>
+          <section class="card side-card" id="placementCard"></section>
+          <section class="card side-card" id="insightsCard"></section>
+        </aside>
+      </section>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
