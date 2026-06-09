@@ -99,6 +99,7 @@ const pipelineBoardEl = document.getElementById('pipelineBoard');
 const queueGridEl = document.getElementById('queueGrid');
 const viewStripEl = document.getElementById('viewStrip');
 const tableEl = document.getElementById('publisherTable');
+const mobileListEl = document.getElementById('mobileList');
 const resultCountEl = document.getElementById('resultCount');
 const heroNoteEl = document.getElementById('heroNote');
 const overviewCardEl = document.getElementById('overviewCard');
@@ -519,11 +520,77 @@ function applyFilters() {
   renderInsights(state.filtered);
 }
 
+function renderMobileCards(rows) {
+  if (!rows.length) {
+    mobileListEl.innerHTML = '<article class="mobile-card empty">No publishers match the current CRM filters.</article>';
+    return;
+  }
+
+  mobileListEl.innerHTML = rows.map(item => {
+    const score = item._derived.coverageScore;
+    const percent = Math.round((score / 6) * 100);
+    return `
+      <article class="mobile-card">
+        <div class="mobile-card-top">
+          <div>
+            <div class="domain">${item.domain}</div>
+            <div class="meta-line">${item.id}</div>
+          </div>
+          <div class="mobile-score-pill ${coverageClass(score)}">${percent}%</div>
+        </div>
+
+        <div class="coverage mobile-coverage">
+          <div class="coverage-top">
+            <span>${score}/6 fields</span>
+            <span>${percent}%</span>
+          </div>
+          <div class="coverage-bar">
+            <div class="coverage-fill ${coverageClass(score)}" style="width:${percent}%"></div>
+          </div>
+        </div>
+
+        <div class="inline-stack mobile-badge-row">
+          <span class="badge ${badgeClass(item.status)}">${prettyLabel(item.status)}</span>
+          <span class="badge ${badgeClass(item.fit_status || 'unknown')}">${prettyLabel(item.fit_status || 'unknown')}</span>
+          <span class="badge ${badgeClass(item.relationship_stage || 'unknown')}">${prettyLabel(item.relationship_stage || 'unknown')}</span>
+        </div>
+
+        <div class="mobile-pill-row">
+          ${item.placement_types.map(value => `<span class="pill">${prettyLabel(value)}</span>`).join('') || '<span class="muted">No placements set</span>'}
+        </div>
+
+        <details class="mobile-card-details">
+          <summary>More</summary>
+          <div class="mobile-detail-grid">
+            <div class="mobile-kv">
+              <span class="stack-label">Deal model</span>
+              <strong>${item.deal_model ? prettyLabel(item.deal_model) : '—'}</strong>
+            </div>
+            <div class="mobile-kv">
+              <span class="stack-label">Last touch</span>
+              <strong>${safeDate(item.last_contact)}</strong>
+            </div>
+            <div class="mobile-kv">
+              <span class="stack-label">Next follow-up</span>
+              <strong>${safeDate(item.next_followup)}</strong>
+            </div>
+            <div class="mobile-kv mobile-kv-wide">
+              <span class="stack-label">Sources</span>
+              <div class="pills">${item._derived.sourceSummary.map(value => `<span class="source-pill">${value}</span>`).join('')}</div>
+            </div>
+          </div>
+        </details>
+      </article>
+    `;
+  }).join('');
+}
+
 function renderTable() {
   resultCountEl.textContent = `${state.filtered.length} shown`;
 
   if (!state.filtered.length) {
     tableEl.innerHTML = '<tr><td class="empty" colspan="9">No publishers match the current CRM filters.</td></tr>';
+    renderMobileCards([]);
     return;
   }
 
@@ -562,6 +629,8 @@ function renderTable() {
       </tr>
     `;
   }).join('');
+
+  renderMobileCards(state.filtered);
 }
 
 function populateFilters(rows) {
