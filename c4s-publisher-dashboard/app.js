@@ -11,31 +11,31 @@ const VIEWS = [
   {
     key: 'all',
     label: 'All publishers',
-    description: 'Complete register',
+    description: 'Full list',
     match: () => true,
   },
   {
     key: 'active',
     label: 'Active partners',
-    description: 'Live relationships',
+    description: 'Active now',
     match: item => item.status === 'active' || item.relationship_stage === 'active_partner',
   },
   {
     key: 'banner',
     label: 'Banner inventory',
-    description: 'Banner-capable sites',
+    description: 'Banner sites',
     match: item => item.placement_types.includes('banner'),
   },
   {
     key: 'widget',
     label: 'Widget inventory',
-    description: 'Widget-capable sites',
+    description: 'Widget sites',
     match: item => item.placement_types.includes('widget'),
   },
   {
     key: 'incomplete',
     label: 'Needs enrichment',
-    description: 'Missing key context',
+    description: 'Missing key data',
     match: item => item._derived.coverageScore < 4,
   },
 ];
@@ -54,37 +54,37 @@ const QUEUES = [
   {
     key: 'all',
     label: 'Everything',
-    description: 'No queue filter',
+    description: 'All rows',
     match: () => true,
   },
   {
     key: 'terms_unknown',
     label: 'Unknown deal model',
-    description: 'Terms still missing',
+    description: 'Terms missing',
     match: item => item._derived.dealKnown === false,
   },
   {
     key: 'needs_context',
     label: 'Missing market context',
-    description: 'Add niche / geo / language',
+    description: 'Need niche / geo / language',
     match: item => item._derived.contextMissing > 0,
   },
   {
     key: 'no_touch_history',
     label: 'No touch history',
-    description: 'No visible last contact',
+    description: 'No last contact',
     match: item => !item.last_contact,
   },
   {
     key: 'followup_due',
     label: 'Follow-up scheduled',
-    description: 'Has next action date',
+    description: 'Has follow-up date',
     match: item => Boolean(item.next_followup),
   },
   {
     key: 'multi_placement',
     label: 'Multi-placement',
-    description: 'Can run banner + widget',
+    description: 'Banner + widget',
     match: item => item._derived.multiPlacement,
   },
 ];
@@ -237,12 +237,12 @@ function renderStats(rows) {
   const bannerOnly = metrics.banner - metrics.multiPlacement;
   const widgetOnly = metrics.widget - metrics.multiPlacement;
   const statCards = [
-    ['Total publishers', metrics.total, `${metrics.active} currently marked active`],
-    ['Banner capable', metrics.banner, `${bannerOnly} banner-only publishers`],
-    ['Widget capable', metrics.widget, `${widgetOnly} widget-only publishers`],
-    ['Unknown deal model', metrics.termsUnknown, 'Fill in terms for cleaner CRM visibility'],
+    ['Total publishers', metrics.total, `${metrics.active} active`],
+    ['Banner capable', metrics.banner, `${bannerOnly} banner only`],
+    ['Widget capable', metrics.widget, `${widgetOnly} widget only`],
+    ['Unknown deal model', metrics.termsUnknown, 'Needs terms'],
     ['Need context', metrics.needsContext, 'Niche / geo / language missing'],
-    ['Coverage score', `${metrics.avgCoverage}%`, 'Visible profile completeness'],
+    ['Coverage score', `${metrics.avgCoverage}%`, 'Filled tracked fields'],
   ];
 
   statsEl.innerHTML = statCards.map(([label, value, meta]) => `
@@ -253,7 +253,7 @@ function renderStats(rows) {
     </article>
   `).join('');
 
-  heroNoteEl.textContent = `${metrics.active} active partners tracked. ${metrics.termsUnknown} still need explicit deal-model capture, and ${metrics.needsContext} need richer market context to behave like a real CRM.`;
+  heroNoteEl.textContent = `${metrics.active} active. ${metrics.termsUnknown} without deal model. ${metrics.needsContext} missing niche / geo / language.`;
 }
 
 function renderViews(rows) {
@@ -342,24 +342,24 @@ function renderOverview(rows) {
   overviewCardEl.innerHTML = `
     <div class="side-head">
       <div>
-        <p class="section-kicker">Operating posture</p>
-        <h3>CRM health</h3>
+        <p class="section-kicker">Overview</p>
+        <h3>Current view</h3>
       </div>
     </div>
     <ul class="mini-list">
-      <li><span>Source of truth</span><span class="metric-strong">Git-backed repo</span></li>
-      <li><span>Share policy</span><span class="metric-strong">Sanitized export only</span></li>
-      <li><span>Current active view</span><span class="metric-strong">${VIEWS.find(view => view.key === state.activeView)?.label || 'All publishers'}</span></li>
-      <li><span>Current stage focus</span><span class="metric-strong">${state.activeStage === 'all' ? 'All stages' : PIPELINE_STAGES.find(stage => stage.key === state.activeStage)?.label || state.activeStage}</span></li>
+      <li><span>View</span><span class="metric-strong">${VIEWS.find(view => view.key === state.activeView)?.label || 'All publishers'}</span></li>
+      <li><span>Stage</span><span class="metric-strong">${state.activeStage === 'all' ? 'All stages' : PIPELINE_STAGES.find(stage => stage.key === state.activeStage)?.label || state.activeStage}</span></li>
+      <li><span>Shown</span><span class="metric-strong">${rows.length}</span></li>
+      <li><span>Follow-ups</span><span class="metric-strong">${metrics.scheduledFollowups}</span></li>
     </ul>
     <div class="dual-metric">
       <div class="metric-box">
-        <div class="label">Visible coverage</div>
+        <div class="label">Coverage</div>
         <div class="value">${metrics.avgCoverage}%</div>
       </div>
       <div class="metric-box">
-        <div class="label">Scheduled follow-ups</div>
-        <div class="value">${metrics.scheduledFollowups}</div>
+        <div class="label">Unknown terms</div>
+        <div class="value">${metrics.termsUnknown}</div>
       </div>
     </div>
   `;
@@ -384,7 +384,6 @@ function renderCoverage(rows) {
       <li><span>No touch history</span><span class="metric-strong">${missingTouch}</span></li>
       <li><span>Low-coverage profiles</span><span class="metric-strong">${lowCoverage}</span></li>
     </ul>
-    <p class="hint">Coverage uses only share-safe fields: niche, geo, language, deal model, last touch, and next follow-up.</p>
   `;
 }
 
@@ -405,7 +404,6 @@ function renderPlacement(rows) {
       <li><span>Widget only</span><span class="metric-strong">${widgetOnly}</span></li>
       <li><span>Multi-placement</span><span class="metric-strong">${both}</span></li>
     </ul>
-    <p class="hint">Use this split to see whether the supply side is concentrated in banner inventory or balanced across placements.</p>
   `;
 }
 
@@ -415,37 +413,37 @@ function renderInsights(rows) {
 
   if (metrics.termsUnknown > 0) {
     insights.push({
-      title: 'Deal-model capture is the biggest gap',
-      body: `${metrics.termsUnknown} publishers still show unknown terms, so CRM visibility is weaker than it should be.`
+      title: 'Unknown deal models',
+      body: `${metrics.termsUnknown} publishers.`
     });
   }
 
   if (metrics.needsContext > 0) {
     insights.push({
-      title: 'Context enrichment should be the first cleanup pass',
-      body: `${metrics.needsContext} records still lack niche, geo, or language context.`
+      title: 'Missing context',
+      body: `${metrics.needsContext} records missing niche, geo, or language.`
     });
   }
 
   if (metrics.noTouchHistory > 0) {
     insights.push({
-      title: 'Outreach timeline is not yet visible',
-      body: `${metrics.noTouchHistory} records do not expose any last-contact date in the dashboard layer.`
+      title: 'No touch history',
+      body: `${metrics.noTouchHistory} records without last contact date.`
     });
   }
 
   if (!insights.length) {
     insights.push({
-      title: 'Dashboard is healthy',
-      body: 'All current share-safe CRM signals look populated.'
+      title: 'No major gaps',
+      body: 'All current fields are populated.'
     });
   }
 
   insightsCardEl.innerHTML = `
     <div class="side-head">
       <div>
-        <p class="section-kicker">Insights</p>
-        <h3>Operator notes</h3>
+        <p class="section-kicker">Notes</p>
+        <h3>Gaps</h3>
       </div>
     </div>
     <div class="insight-list">
@@ -522,7 +520,7 @@ function applyFilters() {
 
 function renderMobileCards(rows) {
   if (!rows.length) {
-    mobileListEl.innerHTML = '<article class="mobile-card empty">No publishers match the current CRM filters.</article>';
+    mobileListEl.innerHTML = '<article class="mobile-card empty">No publishers match the filters.</article>';
     return;
   }
 
@@ -589,7 +587,7 @@ function renderTable() {
   resultCountEl.textContent = `${state.filtered.length} shown`;
 
   if (!state.filtered.length) {
-    tableEl.innerHTML = '<tr><td class="empty" colspan="9">No publishers match the current CRM filters.</td></tr>';
+    tableEl.innerHTML = '<tr><td class="empty" colspan="9">No publishers match the filters.</td></tr>';
     renderMobileCards([]);
     return;
   }
