@@ -162,6 +162,13 @@ function safeDate(value) {
   return value || '—';
 }
 
+function publisherUrl(domain) {
+  const value = String(domain || '').trim();
+  if (!value) return '#';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+}
+
 function prettyLabel(value) {
   return String(value || 'unknown').replace(/_/g, ' ');
 }
@@ -545,7 +552,7 @@ function renderMobileCards(rows) {
       <article class="mobile-card">
         <div class="mobile-card-top">
           <div>
-            <div class="domain">${item.domain}</div>
+            <div class="domain"><a class="domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer">${item.domain}</a></div>
             <div class="meta-line">${item.id}</div>
           </div>
           <div class="mobile-score-pill ${coverageClass(score)}">${percent}%</div>
@@ -612,7 +619,7 @@ function renderTable() {
     return `
       <tr>
         <td>
-          <div class="domain">${item.domain}</div>
+          <div class="domain"><a class="domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer">${item.domain}</a></div>
           <div class="meta-line">${item.id}</div>
         </td>
         <td>
@@ -670,7 +677,7 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json?v=20260610b');
+  const res = await fetch('./data/publishers.dashboard.json?v=20260610c');
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.publishers = withDerivedData(payload.publishers || []);
