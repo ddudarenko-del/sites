@@ -142,6 +142,13 @@ h2 {
   line-height: 1.6;
 }
 
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -205,6 +212,10 @@ h2 {
   gap: 14px;
   align-items: flex-start;
   margin-bottom: 16px;
+}
+
+.compact-head {
+  margin-bottom: 14px;
 }
 
 .ghost-button {

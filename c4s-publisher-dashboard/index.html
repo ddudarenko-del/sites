@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>C4S Publisher Dashboard</title>
-    <link rel="stylesheet" href="./styles.css?v=20260610e" />
+    <link rel="stylesheet" href="./styles.css?v=20260610f" />
   </head>
   <body>
     <div class="page">
       <header class="hero card">
         <div>
           <p class="eyebrow">C4S Publisher Hub</p>
-          <h1>Publisher outreach dashboard</h1>
-          <p class="subcopy">Publishers, stages, placements, and follow-ups.</p>
+          <h1 id="heroTitle">New sites first</h1>
+          <p class="subcopy" id="heroSubcopy">Open the site directly. Use the arrow for details when you need them.</p>
+          <div class="hero-stats" id="heroStats"></div>
         </div>
         <div class="hero-side">
           <p class="hero-note" id="heroNote">
@@ -33,29 +34,45 @@
 
       <section class="workspace">
         <div class="main-column">
-          <section class="card section-card">
-            <div class="section-head">
+          <section class="table-wrap card">
+            <div class="table-head">
               <div>
-                <p class="section-kicker">Pipeline</p>
-                <h2>Stages</h2>
+                <p class="section-kicker" id="listKicker">Start here</p>
+                <h2 id="listTitle">New sites</h2>
               </div>
-              <button class="ghost-button" id="resetStageButton" type="button">Reset stage filter</button>
-            </div>
-            <div class="pipeline-board" id="pipelineBoard"></div>
-          </section>
-
-          <section class="card section-card">
-            <div class="section-head">
-              <div>
-                <p class="section-kicker">Action queue</p>
-                <h2>Needs attention</h2>
+              <div class="table-head-actions">
+                <p id="resultCount">Loading…</p>
+                <button class="ghost-button" id="clearFiltersButton" type="button">Back to New</button>
               </div>
-              <button class="ghost-button" id="resetQueueButton" type="button">Reset queue</button>
             </div>
-            <div class="queue-grid" id="queueGrid"></div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Publisher</th>
+                    <th>Coverage</th>
+                    <th>Status</th>
+                    <th>Stage</th>
+                    <th>Placements</th>
+                    <th>Deal model</th>
+                    <th>Last touch</th>
+                    <th>Next follow-up</th>
+                    <th>Sources</th>
+                  </tr>
+                </thead>
+                <tbody id="publisherTable"></tbody>
+              </table>
+            </div>
+            <div class="mobile-list" id="mobileList"></div>
           </section>
 
           <section class="card controls">
+            <div class="section-head compact-head">
+              <div>
+                <p class="section-kicker">Refine view</p>
+                <h2>Search & filters</h2>
+              </div>
+            </div>
             <div class="control-grid">
               <label>
                 <span>Search domain</span>
@@ -91,36 +108,26 @@
             </div>
           </section>
 
-          <section class="table-wrap card">
-            <div class="table-head">
+          <section class="card section-card">
+            <div class="section-head">
               <div>
-                <p class="section-kicker">Publisher register</p>
-                <h2>Publisher list</h2>
+                <p class="section-kicker">Pipeline</p>
+                <h2>Stages</h2>
               </div>
-              <div class="table-head-actions">
-                <p id="resultCount">Loading…</p>
-                <button class="ghost-button" id="clearFiltersButton" type="button">Clear all filters</button>
+              <button class="ghost-button" id="resetStageButton" type="button">Reset stage filter</button>
+            </div>
+            <div class="pipeline-board" id="pipelineBoard"></div>
+          </section>
+
+          <section class="card section-card">
+            <div class="section-head">
+              <div>
+                <p class="section-kicker">Action queue</p>
+                <h2>Needs attention</h2>
               </div>
+              <button class="ghost-button" id="resetQueueButton" type="button">Reset queue</button>
             </div>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Publisher</th>
-                    <th>Coverage</th>
-                    <th>Status</th>
-                    <th>Stage</th>
-                    <th>Placements</th>
-                    <th>Deal model</th>
-                    <th>Last touch</th>
-                    <th>Next follow-up</th>
-                    <th>Sources</th>
-                  </tr>
-                </thead>
-                <tbody id="publisherTable"></tbody>
-              </table>
-            </div>
-            <div class="mobile-list" id="mobileList"></div>
+            <div class="queue-grid" id="queueGrid"></div>
           </section>
         </div>
 
@@ -133,6 +140,6 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260610e" defer></script>
+    <script src="./app.js?v=20260610f" defer></script>
   </body>
 </html>

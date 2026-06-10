@@ -2,7 +2,7 @@ const state = {
   publishers: [],
   filtered: [],
   meta: {},
-  activeView: 'all',
+  activeView: 'new',
   activeStage: 'all',
   activeQueue: 'all',
 };
@@ -110,7 +110,12 @@ const viewSelectEl = document.getElementById('viewSelect');
 const tableEl = document.getElementById('publisherTable');
 const mobileListEl = document.getElementById('mobileList');
 const resultCountEl = document.getElementById('resultCount');
+const heroTitleEl = document.getElementById('heroTitle');
+const heroSubcopyEl = document.getElementById('heroSubcopy');
+const heroStatsEl = document.getElementById('heroStats');
 const heroNoteEl = document.getElementById('heroNote');
+const listKickerEl = document.getElementById('listKicker');
+const listTitleEl = document.getElementById('listTitle');
 const overviewCardEl = document.getElementById('overviewCard');
 const coverageCardEl = document.getElementById('coverageCard');
 const placementCardEl = document.getElementById('placementCard');
@@ -247,6 +252,35 @@ function calculateMetrics(rows) {
   };
 }
 
+function currentView() {
+  return VIEWS.find(entry => entry.key === state.activeView) || VIEWS[0];
+}
+
+function renderHero() {
+  const metrics = calculateMetrics(state.publishers);
+  const shown = state.filtered.length;
+  const view = currentView();
+
+  const titles = {
+    new: 'New sites first',
+    active: 'Active partners',
+    reached: 'Reached / no-fit',
+    all: 'All publishers',
+  };
+
+  heroTitleEl.textContent = titles[view.key] || view.label;
+  heroSubcopyEl.textContent = 'Open the site directly. Use the arrow for details only when you need them.';
+  heroStatsEl.innerHTML = [
+    ['New', metrics.newLeads, view.key === 'new'],
+    ['Partners', metrics.active, view.key === 'active'],
+    ['Reached', metrics.noFit, view.key === 'reached'],
+  ].map(([label, value, active]) => `
+    <span class="hero-chip ${active ? 'hero-chip-accent' : ''}">${label}: ${value}</span>
+  `).join('');
+
+  heroNoteEl.textContent = `${shown} shown now in ${view.label}. ${metrics.newLeads} new, ${metrics.active} partners, ${metrics.noFit} reached.`;
+}
+
 function countForStage(rows, key) {
   return rows.filter(item => {
     if (key === 'no_fit') return isNoFit(item);
@@ -274,8 +308,6 @@ function renderStats(rows) {
       <div class="stat-meta">${meta}</div>
     </article>
   `).join('');
-
-  heroNoteEl.textContent = `${metrics.total} publishers. ${metrics.active} partners. ${metrics.newLeads} new. ${metrics.noFit} reached / no fit. ${metrics.banner} banner capable (${bannerOnly} banner only). ${metrics.widget} widget capable (${widgetOnly} widget only). ${metrics.termsUnknown} unknown deal model.`;
 }
 
 function renderViews(rows) {
@@ -526,7 +558,7 @@ function applyFilters() {
   const placement = placementFilter.value;
   const stageValue = stageFilter.value;
 
-  const view = VIEWS.find(entry => entry.key === state.activeView) || VIEWS[0];
+  const view = currentView();
 
   state.filtered = sortRows(state.publishers.filter(item => {
     const matchesQuery = !query || item.domain.toLowerCase().includes(query);
@@ -538,6 +570,7 @@ function applyFilters() {
     return matchesQuery && matchesStatus && matchesPlacement && matchesStageFilter && matchesStageCard && matchesView && matchesQueue(item);
   }));
 
+  renderHero();
   renderTable();
   renderOverview(state.filtered);
   renderCoverage(state.filtered);
@@ -609,6 +642,9 @@ function renderMobileCards(rows) {
 }
 
 function renderTable() {
+  const view = currentView();
+  listKickerEl.textContent = view.key === 'new' ? 'Start here' : 'Publisher register';
+  listTitleEl.textContent = view.key === 'new' ? 'New sites' : view.label;
   resultCountEl.textContent = `${state.filtered.length} shown`;
 
   if (!state.filtered.length) {
@@ -671,7 +707,7 @@ function resetFilters() {
   placementFilter.value = 'all';
   stageFilter.value = 'all';
   sortFilter.value = 'updated_desc';
-  state.activeView = 'all';
+  state.activeView = 'new';
   state.activeStage = 'all';
   state.activeQueue = 'all';
   renderViews(state.publishers);
@@ -681,7 +717,7 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json?v=20260610e');
+  const res = await fetch('./data/publishers.dashboard.json?v=20260610f');
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.publishers = withDerivedData(payload.publishers || []);
