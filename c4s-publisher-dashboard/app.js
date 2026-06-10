@@ -274,7 +274,7 @@ function renderStats(rows) {
     </article>
   `).join('');
 
-  heroNoteEl.textContent = `${metrics.active} partners. ${metrics.newLeads} new. ${metrics.noFit} reached / no fit.`;
+  heroNoteEl.textContent = `${metrics.total} publishers. ${metrics.active} partners. ${metrics.newLeads} new. ${metrics.noFit} reached / no fit. ${metrics.banner} banner capable (${bannerOnly} banner only). ${metrics.widget} widget capable (${widgetOnly} widget only). ${metrics.termsUnknown} unknown deal model.`;
 }
 
 function renderViews(rows) {
@@ -549,37 +549,35 @@ function renderMobileCards(rows) {
     const score = item._derived.coverageScore;
     const percent = Math.round((score / 6) * 100);
     return `
-      <article class="mobile-card">
-        <div class="mobile-card-top">
-          <div>
-            <div class="domain"><a class="domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer">${item.domain}</a></div>
-            <div class="meta-line">${item.id}</div>
+      <details class="mobile-card mobile-card-shell">
+        <summary class="mobile-card-summary">
+          <a class="domain-link mobile-domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${item.domain}</a>
+          <span class="mobile-card-arrow" aria-hidden="true"></span>
+        </summary>
+
+        <div class="mobile-card-body">
+          <div class="meta-line mobile-meta-line">${item.id}</div>
+
+          <div class="coverage mobile-coverage">
+            <div class="coverage-top">
+              <span>${score}/6 fields</span>
+              <span>${percent}%</span>
+            </div>
+            <div class="coverage-bar">
+              <div class="coverage-fill ${coverageClass(score)}" style="width:${percent}%"></div>
+            </div>
           </div>
-          <div class="mobile-score-pill ${coverageClass(score)}">${percent}%</div>
-        </div>
 
-        <div class="coverage mobile-coverage">
-          <div class="coverage-top">
-            <span>${score}/6 fields</span>
-            <span>${percent}%</span>
+          <div class="inline-stack mobile-badge-row">
+            <span class="badge ${badgeClass(item.status)}">${prettyLabel(item.status)}</span>
+            <span class="badge ${badgeClass(item.fit_status || 'unknown')}">${prettyLabel(item.fit_status || 'unknown')}</span>
+            <span class="badge ${badgeClass(item.relationship_stage || 'unknown')}">${prettyLabel(item.relationship_stage || 'unknown')}</span>
           </div>
-          <div class="coverage-bar">
-            <div class="coverage-fill ${coverageClass(score)}" style="width:${percent}%"></div>
+
+          <div class="mobile-pill-row">
+            ${item.placement_types.map(value => `<span class="pill">${prettyLabel(value)}</span>`).join('') || '<span class="muted">No placements set</span>'}
           </div>
-        </div>
 
-        <div class="inline-stack mobile-badge-row">
-          <span class="badge ${badgeClass(item.status)}">${prettyLabel(item.status)}</span>
-          <span class="badge ${badgeClass(item.fit_status || 'unknown')}">${prettyLabel(item.fit_status || 'unknown')}</span>
-          <span class="badge ${badgeClass(item.relationship_stage || 'unknown')}">${prettyLabel(item.relationship_stage || 'unknown')}</span>
-        </div>
-
-        <div class="mobile-pill-row">
-          ${item.placement_types.map(value => `<span class="pill">${prettyLabel(value)}</span>`).join('') || '<span class="muted">No placements set</span>'}
-        </div>
-
-        <details class="mobile-card-details">
-          <summary>More</summary>
           <div class="mobile-detail-grid">
             <div class="mobile-kv">
               <span class="stack-label">Deal model</span>
@@ -598,8 +596,8 @@ function renderMobileCards(rows) {
               <div class="pills">${item._derived.sourceSummary.map(value => `<span class="source-pill">${value}</span>`).join('')}</div>
             </div>
           </div>
-        </details>
-      </article>
+        </div>
+      </details>
     `;
   }).join('');
 }

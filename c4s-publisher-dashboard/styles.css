@@ -560,21 +560,60 @@ tbody tr:hover {
   border: 1px solid var(--line);
 }
 
+.mobile-card-shell {
+  padding: 0;
+  overflow: hidden;
+}
+
 .mobile-card + .mobile-card {
   margin-top: 12px;
 }
 
-.mobile-card-top {
+.mobile-card-summary {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  list-style: none;
 }
 
+.mobile-card-summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-card-body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.mobile-domain-link {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mobile-card-arrow {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 180ms ease, border-color 180ms ease;
+  margin-right: 4px;
+}
+
+.mobile-card-shell[open] .mobile-card-arrow {
+  transform: rotate(225deg);
+  border-color: var(--accent-2);
+}
+
+.mobile-meta-line,
 .mobile-coverage,
 .mobile-badge-row,
 .mobile-pill-row,
-.mobile-card-details {
+.mobile-detail-grid {
   margin-top: 14px;
 }
 
@@ -791,7 +830,7 @@ tbody tr:hover {
   }
 
   .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: none;
   }
 
   .side-column,
@@ -835,7 +874,6 @@ tbody tr:hover {
   }
 
   .mini-list li,
-  .mobile-card-top,
   .coverage-top {
     flex-direction: column;
     align-items: flex-start;
