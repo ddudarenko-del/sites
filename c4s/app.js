@@ -1,11 +1,22 @@
 const state = {
+  rawPublishers: [],
   publishers: [],
   filtered: [],
   meta: {},
   activeView: 'new',
   activeStage: 'all',
   activeQueue: 'all',
+  stageOverrides: {},
 };
+
+const STAGE_OVERRIDE_STORAGE_KEY = 'c4s-dashboard-stage-overrides-v2';
+
+const MOVE_STAGE_OPTIONS = [
+  { key: 'researching', label: 'New' },
+  { key: 'waiting_reply', label: 'Awaiting reply' },
+  { key: 'active_partner', label: 'We are partners' },
+  { key: 'no_fit', label: 'Cannot work' },
+];
 
 function isPartner(item) {
   return item.status === 'active' || item.relationship_stage === 'active_partner';
@@ -18,15 +29,32 @@ function isNoFit(item) {
 }
 
 function isNewLead(item) {
-  return item.status === 'prospect' || item.relationship_stage === 'researching' || item.segment === 'similar_sites';
+  return !isPartner(item)
+    && !isNoFit(item)
+    && item.relationship_stage !== 'waiting_reply'
+    && (
+      item.status === 'prospect'
+      || ['researching', 'contacted', 'negotiating'].includes(item.relationship_stage)
+      || item.segment === 'similar_sites'
+    );
+}
+
+function isAwaitingReply(item) {
+  return item.relationship_stage === 'waiting_reply';
 }
 
 const VIEWS = [
   {
-    key: 'all',
-    label: 'Publishers',
-    description: 'All tracked',
-    match: () => true,
+    key: 'new',
+    label: 'New',
+    description: 'Research pool',
+    match: item => isNewLead(item),
+  },
+  {
+    key: 'awaiting',
+    label: 'Awaiting reply',
+    description: 'Waiting for answer',
+    match: item => isAwaitingReply(item),
   },
   {
     key: 'active',
@@ -35,16 +63,16 @@ const VIEWS = [
     match: item => isPartner(item),
   },
   {
-    key: 'reached',
-    label: 'Reached',
+    key: 'no_fit',
+    label: 'No fit',
     description: 'No fit',
     match: item => isNoFit(item),
   },
   {
-    key: 'new',
-    label: 'New',
-    description: 'Research pool',
-    match: item => isNewLead(item),
+    key: 'all',
+    label: 'All publishers',
+    description: 'All tracked',
+    match: () => true,
   },
 ];
 
@@ -120,6 +148,9 @@ const overviewCardEl = document.getElementById('overviewCard');
 const coverageCardEl = document.getElementById('coverageCard');
 const placementCardEl = document.getElementById('placementCard');
 const insightsCardEl = document.getElementById('insightsCard');
+const clearFiltersButtonEl = document.getElementById('clearFiltersButton');
+const resetStageButtonEl = document.getElementById('resetStageButton');
+const resetQueueButtonEl = document.getElementById('resetQueueButton');
 
 function slug(value) {
   return String(value || 'default').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'default';
@@ -232,6 +263,135 @@ function withDerivedData(rows) {
   }));
 }
 
+function loadStageOverrides() {
+  try {
+    const raw = window.localStorage.getItem(STAGE_OVERRIDE_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (error) {
+    console.warn('Failed to load saved stage overrides', error);
+    return {};
+  }
+}
+
+function saveStageOverrides() {
+  try {
+    window.localStorage.setItem(STAGE_OVERRIDE_STORAGE_KEY, JSON.stringify(state.stageOverrides));
+  } catch (error) {
+    console.warn('Failed to save stage overrides', error);
+  }
+}
+
+function applyStageOverride(item, stageKey) {
+  if (!stageKey) return { ...item };
+
+  if (stageKey === 'active_partner') {
+    return {
+      ...item,
+      status: 'active',
+      fit_status: 'approved',
+      relationship_stage: 'active_partner',
+    };
+  }
+
+  if (stageKey === 'no_fit') {
+    return {
+      ...item,
+      status: 'no-fit',
+      fit_status: 'rejected',
+      relationship_stage: 'no_fit',
+    };
+  }
+
+  if (stageKey === 'waiting_reply') {
+    return {
+      ...item,
+      status: 'prospect',
+      fit_status: item.fit_status === 'rejected' ? 'unverified' : (item.fit_status || 'unverified'),
+      relationship_stage: 'waiting_reply',
+    };
+  }
+
+  return {
+    ...item,
+    status: 'prospect',
+    fit_status: item.fit_status === 'approved' || item.fit_status === 'rejected' ? 'unverified' : (item.fit_status || 'unverified'),
+    relationship_stage: 'researching',
+  };
+}
+
+function rebuildPublishers() {
+  state.publishers = withDerivedData(
+    state.rawPublishers.map(item => applyStageOverride(item, state.stageOverrides[item.id]))
+  );
+}
+
+function moveControlOptions(currentStage) {
+  return MOVE_STAGE_OPTIONS.map(option => `
+    <option value="${option.key}" ${currentStage === option.key ? 'selected' : ''}>${option.label}</option>
+  `).join('');
+}
+
+function moveStageValue(item) {
+  if (isPartner(item)) return 'active_partner';
+  if (isNoFit(item)) return 'no_fit';
+  if (isAwaitingReply(item)) return 'waiting_reply';
+  return 'researching';
+}
+
+function renderMoveControl(item, context = 'table') {
+  return `
+    <label class="move-control move-control-${context}">
+      <span class="move-control-label">Move to</span>
+      <select data-stage-move="${item.id}" aria-label="Move ${item.domain} to stage">
+        ${moveControlOptions(moveStageValue(item))}
+      </select>
+    </label>
+  `;
+}
+
+function refreshDashboardChrome() {
+  populateFilters(state.publishers);
+  renderStats(state.publishers);
+  renderViews(state.publishers);
+  renderPipeline(state.publishers);
+  renderQueues(state.publishers);
+  applyFilters();
+}
+
+function updatePublisherStage(id, nextStage) {
+  state.stageOverrides[id] = nextStage;
+  saveStageOverrides();
+  rebuildPublishers();
+  refreshDashboardChrome();
+}
+
+function bindStageMoveControls(scope = document) {
+  scope.querySelectorAll('[data-stage-move]').forEach(select => {
+    select.addEventListener('change', event => {
+      event.stopPropagation();
+      updatePublisherStage(select.dataset.stageMove, select.value);
+    });
+    select.addEventListener('click', event => event.stopPropagation());
+  });
+}
+
+function updateActionButtons() {
+  const atDefaultNewView = state.activeView === 'new'
+    && state.activeStage === 'all'
+    && state.activeQueue === 'all'
+    && !searchInput.value.trim()
+    && statusFilter.value === 'all'
+    && placementFilter.value === 'all'
+    && stageFilter.value === 'all'
+    && sortFilter.value === 'updated_desc';
+
+  clearFiltersButtonEl.hidden = atDefaultNewView;
+  resetStageButtonEl.hidden = state.activeStage === 'all' && stageFilter.value === 'all';
+  resetQueueButtonEl.hidden = state.activeQueue === 'all';
+}
+
 function calculateMetrics(rows) {
   return {
     total: rows.length,
@@ -263,8 +423,9 @@ function renderHero() {
 
   const titles = {
     new: 'New sites first',
+    awaiting: 'Awaiting reply',
     active: 'Active partners',
-    reached: 'Reached / no-fit',
+    no_fit: 'Cannot work',
     all: 'All publishers',
   };
 
@@ -272,13 +433,14 @@ function renderHero() {
   heroSubcopyEl.textContent = 'Open the site directly. Use the arrow for details only when you need them.';
   heroStatsEl.innerHTML = [
     ['New', metrics.newLeads, view.key === 'new'],
+    ['Awaiting', state.publishers.filter(item => isAwaitingReply(item)).length, view.key === 'awaiting'],
     ['Partners', metrics.active, view.key === 'active'],
-    ['Reached', metrics.noFit, view.key === 'reached'],
+    ['No fit', metrics.noFit, view.key === 'no_fit'],
   ].map(([label, value, active]) => `
     <span class="hero-chip ${active ? 'hero-chip-accent' : ''}">${label}: ${value}</span>
   `).join('');
 
-  heroNoteEl.textContent = `${shown} shown now in ${view.label}. ${metrics.newLeads} new, ${metrics.active} partners, ${metrics.noFit} reached.`;
+  heroNoteEl.textContent = `${shown} shown now in ${view.label}. ${metrics.newLeads} new, ${state.publishers.filter(item => isAwaitingReply(item)).length} awaiting, ${metrics.active} partners, ${metrics.noFit} no fit.`;
 }
 
 function countForStage(rows, key) {
@@ -292,13 +454,14 @@ function renderStats(rows) {
   const metrics = calculateMetrics(rows);
   const bannerOnly = metrics.banner - metrics.multiPlacement;
   const widgetOnly = metrics.widget - metrics.multiPlacement;
+  const awaiting = rows.filter(item => isAwaitingReply(item)).length;
   const statCards = [
     ['Publishers', metrics.total, `${metrics.active} partners`],
     ['New', metrics.newLeads, 'Research pool'],
-    ['Reached', metrics.noFit, 'No fit'],
+    ['Awaiting', awaiting, 'Waiting for answer'],
+    ['No fit', metrics.noFit, 'Cannot work'],
     ['Banner capable', metrics.banner, `${bannerOnly} banner only`],
     ['Widget capable', metrics.widget, `${widgetOnly} widget only`],
-    ['Unknown deal model', metrics.termsUnknown, 'Needs terms'],
   ];
 
   statsEl.innerHTML = statCards.map(([label, value, meta]) => `
@@ -584,6 +747,8 @@ function renderMobileCards(rows) {
     return;
   }
 
+  const quickMoveView = state.activeView === 'new';
+
   mobileListEl.innerHTML = rows.map(item => {
     const score = item._derived.coverageScore;
     const percent = Math.round((score / 6) * 100);
@@ -593,6 +758,8 @@ function renderMobileCards(rows) {
           <a class="domain-link mobile-domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${item.domain}</a>
           <span class="mobile-card-arrow" aria-hidden="true"></span>
         </summary>
+
+        ${quickMoveView ? `<div class="mobile-quick-move">${renderMoveControl(item, 'mobile-quick')}</div>` : ''}
 
         <div class="mobile-card-body">
           <div class="meta-line mobile-meta-line">${item.id}</div>
@@ -617,6 +784,8 @@ function renderMobileCards(rows) {
             ${item.placement_types.map(value => `<span class="pill">${prettyLabel(value)}</span>`).join('') || '<span class="muted">No placements set</span>'}
           </div>
 
+          ${quickMoveView ? '' : renderMoveControl(item, 'mobile-expanded')}
+
           <div class="mobile-detail-grid">
             <div class="mobile-kv">
               <span class="stack-label">Deal model</span>
@@ -639,6 +808,8 @@ function renderMobileCards(rows) {
       </details>
     `;
   }).join('');
+
+  bindStageMoveControls(mobileListEl);
 }
 
 function renderTable() {
@@ -646,6 +817,7 @@ function renderTable() {
   listKickerEl.textContent = view.key === 'new' ? 'Start here' : 'Publisher register';
   listTitleEl.textContent = view.key === 'new' ? 'New sites' : view.label;
   resultCountEl.textContent = `${state.filtered.length} shown`;
+  updateActionButtons();
 
   if (!state.filtered.length) {
     tableEl.innerHTML = '<tr><td class="empty" colspan="9">No publishers match the filters.</td></tr>';
@@ -679,7 +851,12 @@ function renderTable() {
             <span class="badge ${badgeClass(item.fit_status || 'unknown')}">${prettyLabel(item.fit_status || 'unknown')}</span>
           </div>
         </td>
-        <td><span class="badge ${badgeClass(item.relationship_stage || 'unknown')}">${prettyLabel(item.relationship_stage || 'unknown')}</span></td>
+        <td>
+          <div class="table-stage-cell">
+            <span class="badge ${badgeClass(item.relationship_stage || 'unknown')}">${prettyLabel(item.relationship_stage || 'unknown')}</span>
+            ${renderMoveControl(item, 'table')}
+          </div>
+        </td>
         <td><div class="pills">${item.placement_types.map(value => `<span class="pill">${prettyLabel(value)}</span>`).join('')}</div></td>
         <td>${item.deal_model ? `<span class="badge ${badgeClass(item.deal_model)}">${prettyLabel(item.deal_model)}</span>` : '<span class="muted">—</span>'}</td>
         <td>${safeDate(item.last_contact)}</td>
@@ -689,16 +866,24 @@ function renderTable() {
     `;
   }).join('');
 
+  bindStageMoveControls(tableEl);
   renderMobileCards(state.filtered);
 }
 
 function populateFilters(rows) {
+  const prevStatus = statusFilter.value || 'all';
+  const prevPlacement = placementFilter.value || 'all';
+  const prevStage = stageFilter.value || 'all';
   const statuses = uniq(rows.map(item => item.status)).sort();
   const placements = uniq(rows.flatMap(item => item.placement_types)).sort();
 
   statusFilter.innerHTML = '<option value="all">All statuses</option>' + statuses.map(value => `<option value="${value}">${prettyLabel(value)}</option>`).join('');
   placementFilter.innerHTML = '<option value="all">All placements</option>' + placements.map(value => `<option value="${value}">${prettyLabel(value)}</option>`).join('');
   stageFilter.innerHTML = '<option value="all">All stages</option>' + PIPELINE_STAGES.map(stage => `<option value="${stage.key}">${stage.label}</option>`).join('');
+
+  statusFilter.value = statuses.includes(prevStatus) ? prevStatus : 'all';
+  placementFilter.value = placements.includes(prevPlacement) ? prevPlacement : 'all';
+  stageFilter.value = ['all', ...PIPELINE_STAGES.map(stage => stage.key)].includes(prevStage) ? prevStage : 'all';
 }
 
 function resetFilters() {
@@ -710,24 +895,17 @@ function resetFilters() {
   state.activeView = 'new';
   state.activeStage = 'all';
   state.activeQueue = 'all';
-  renderViews(state.publishers);
-  renderPipeline(state.publishers);
-  renderQueues(state.publishers);
-  applyFilters();
+  refreshDashboardChrome();
 }
 
 async function init() {
   const res = await fetch('./data/publishers.dashboard.json?v=20260610f');
   const payload = await res.json();
   state.meta = payload.meta || {};
-  state.publishers = withDerivedData(payload.publishers || []);
-
-  populateFilters(state.publishers);
-  renderStats(state.publishers);
-  renderViews(state.publishers);
-  renderPipeline(state.publishers);
-  renderQueues(state.publishers);
-  applyFilters();
+  state.rawPublishers = payload.publishers || [];
+  state.stageOverrides = loadStageOverrides();
+  rebuildPublishers();
+  refreshDashboardChrome();
 }
 
 searchInput.addEventListener('input', applyFilters);
@@ -741,13 +919,13 @@ viewSelectEl.addEventListener('change', () => {
   renderViews(state.publishers);
 });
 
-document.getElementById('clearFiltersButton').addEventListener('click', resetFilters);
-document.getElementById('resetStageButton').addEventListener('click', () => {
+clearFiltersButtonEl.addEventListener('click', resetFilters);
+resetStageButtonEl.addEventListener('click', () => {
   state.activeStage = 'all';
   renderPipeline(state.publishers);
   applyFilters();
 });
-document.getElementById('resetQueueButton').addEventListener('click', () => {
+resetQueueButtonEl.addEventListener('click', () => {
   state.activeQueue = 'all';
   renderQueues(state.publishers);
   applyFilters();
