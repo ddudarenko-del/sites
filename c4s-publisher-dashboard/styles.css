@@ -63,6 +63,11 @@ select {
   margin-bottom: 18px;
 }
 
+.top-nav-card {
+  padding: 16px 20px;
+  margin-bottom: 18px;
+}
+
 .eyebrow,
 .section-kicker {
   margin: 0 0 10px;
@@ -316,12 +321,17 @@ h2 {
   margin-bottom: 16px;
 }
 
+.top-view-strip {
+  margin-bottom: 0;
+}
+
 .view-pill {
   min-height: 42px;
   padding: 10px 14px;
   border-radius: 999px;
   color: var(--text);
   cursor: pointer;
+  text-align: left;
 }
 
 .view-pill strong {

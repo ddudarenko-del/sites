@@ -7,42 +7,44 @@ const state = {
   activeQueue: 'all',
 };
 
+function isPartner(item) {
+  return item.status === 'active' || item.relationship_stage === 'active_partner';
+}
+
+function isNoFit(item) {
+  return ['no-fit', 'no_fit', 'rejected'].includes(item.status)
+    || ['no-fit', 'no_fit', 'rejected'].includes(item.fit_status)
+    || ['no_fit', 'rejected'].includes(item.relationship_stage);
+}
+
+function isNewLead(item) {
+  return item.status === 'prospect' || item.relationship_stage === 'researching' || item.segment === 'similar_sites';
+}
+
 const VIEWS = [
   {
     key: 'all',
-    label: 'All publishers',
-    description: 'Full list',
+    label: 'Publishers',
+    description: 'All tracked',
     match: () => true,
   },
   {
     key: 'active',
-    label: 'Active partners',
-    description: 'Active now',
-    match: item => item.status === 'active' || item.relationship_stage === 'active_partner',
+    label: 'Partners',
+    description: 'Working now',
+    match: item => isPartner(item),
   },
   {
-    key: 'similar_sites',
-    label: 'Similar sites',
-    description: 'Research leads',
-    match: item => item.segment === 'similar_sites',
+    key: 'reached',
+    label: 'Reached',
+    description: 'No fit',
+    match: item => isNoFit(item),
   },
   {
-    key: 'banner',
-    label: 'Banner inventory',
-    description: 'Banner sites',
-    match: item => item.placement_types.includes('banner'),
-  },
-  {
-    key: 'widget',
-    label: 'Widget inventory',
-    description: 'Widget sites',
-    match: item => item.placement_types.includes('widget'),
-  },
-  {
-    key: 'incomplete',
-    label: 'Needs enrichment',
-    description: 'Missing key data',
-    match: item => item._derived.coverageScore < 4,
+    key: 'new',
+    label: 'New',
+    description: 'Research pool',
+    match: item => isNewLead(item),
   },
 ];
 
@@ -220,7 +222,9 @@ function withDerivedData(rows) {
 function calculateMetrics(rows) {
   return {
     total: rows.length,
-    active: rows.filter(item => item.status === 'active' || item.relationship_stage === 'active_partner').length,
+    active: rows.filter(item => isPartner(item)).length,
+    noFit: rows.filter(item => isNoFit(item)).length,
+    newLeads: rows.filter(item => isNewLead(item)).length,
     banner: rows.filter(item => item.placement_types.includes('banner')).length,
     widget: rows.filter(item => item.placement_types.includes('widget')).length,
     multiPlacement: rows.filter(item => item._derived.multiPlacement).length,
@@ -237,7 +241,7 @@ function calculateMetrics(rows) {
 
 function countForStage(rows, key) {
   return rows.filter(item => {
-    if (key === 'no_fit') return item.status === 'no-fit' || item.relationship_stage === 'no_fit';
+    if (key === 'no_fit') return isNoFit(item);
     return item.relationship_stage === key;
   }).length;
 }
@@ -247,12 +251,12 @@ function renderStats(rows) {
   const bannerOnly = metrics.banner - metrics.multiPlacement;
   const widgetOnly = metrics.widget - metrics.multiPlacement;
   const statCards = [
-    ['Total publishers', metrics.total, `${metrics.active} active`],
+    ['Publishers', metrics.total, `${metrics.active} partners`],
+    ['New', metrics.newLeads, 'Research pool'],
+    ['Reached', metrics.noFit, 'No fit'],
     ['Banner capable', metrics.banner, `${bannerOnly} banner only`],
     ['Widget capable', metrics.widget, `${widgetOnly} widget only`],
     ['Unknown deal model', metrics.termsUnknown, 'Needs terms'],
-    ['Need context', metrics.needsContext, 'Niche / geo / language missing'],
-    ['Coverage score', `${metrics.avgCoverage}%`, 'Filled tracked fields'],
   ];
 
   statsEl.innerHTML = statCards.map(([label, value, meta]) => `
@@ -263,7 +267,7 @@ function renderStats(rows) {
     </article>
   `).join('');
 
-  heroNoteEl.textContent = `${metrics.active} active. ${metrics.termsUnknown} without deal model. ${metrics.needsContext} missing niche / geo / language.`;
+  heroNoteEl.textContent = `${metrics.active} partners. ${metrics.newLeads} new. ${metrics.noFit} reached / no fit.`;
 }
 
 function renderViews(rows) {
@@ -357,7 +361,7 @@ function renderOverview(rows) {
       </div>
     </div>
     <ul class="mini-list">
-      <li><span>View</span><span class="metric-strong">${VIEWS.find(view => view.key === state.activeView)?.label || 'All publishers'}</span></li>
+      <li><span>View</span><span class="metric-strong">${VIEWS.find(view => view.key === state.activeView)?.label || 'Publishers'}</span></li>
       <li><span>Stage</span><span class="metric-strong">${state.activeStage === 'all' ? 'All stages' : PIPELINE_STAGES.find(stage => stage.key === state.activeStage)?.label || state.activeStage}</span></li>
       <li><span>Shown</span><span class="metric-strong">${rows.length}</span></li>
       <li><span>Follow-ups</span><span class="metric-strong">${metrics.scheduledFollowups}</span></li>
@@ -469,7 +473,7 @@ function renderInsights(rows) {
 
 function matchesStage(item, stageValue) {
   if (stageValue === 'all') return true;
-  if (stageValue === 'no_fit') return item.status === 'no-fit' || item.relationship_stage === 'no_fit';
+  if (stageValue === 'no_fit') return isNoFit(item);
   return item.relationship_stage === stageValue;
 }
 
