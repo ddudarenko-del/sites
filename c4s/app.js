@@ -863,7 +863,7 @@ function renderHero() {
     all: 'All publishers',
   };
 
-  heroTitleEl.textContent = titles[view.key] || view.label;
+  heroTitleEl.textContent = 'CRM cockpit for publisher outreach';
   heroSubcopyEl.textContent = 'Open the site directly. Use the arrow for details only when you need them.';
   heroStatsEl.innerHTML = [
     ['New', metrics.newLeads, view.key === 'new'],
