@@ -106,6 +106,7 @@ const statsEl = document.getElementById('stats');
 const pipelineBoardEl = document.getElementById('pipelineBoard');
 const queueGridEl = document.getElementById('queueGrid');
 const viewStripEl = document.getElementById('viewStrip');
+const viewSelectEl = document.getElementById('viewSelect');
 const tableEl = document.getElementById('publisherTable');
 const mobileListEl = document.getElementById('mobileList');
 const resultCountEl = document.getElementById('resultCount');
@@ -286,9 +287,14 @@ function renderViews(rows) {
     </button>
   `).join('');
 
+  viewSelectEl.innerHTML = VIEWS.map(view => `
+    <option value="${view.key}" ${state.activeView === view.key ? 'selected' : ''}>${view.label} · ${counts[view.key]} · ${view.description}</option>
+  `).join('');
+
   viewStripEl.querySelectorAll('[data-view]').forEach(button => {
     button.addEventListener('click', () => {
       state.activeView = button.dataset.view;
+      viewSelectEl.value = state.activeView;
       applyFilters();
       renderViews(state.publishers);
     });
@@ -675,7 +681,7 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json?v=20260610c');
+  const res = await fetch('./data/publishers.dashboard.json?v=20260610e');
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.publishers = withDerivedData(payload.publishers || []);
@@ -693,6 +699,11 @@ statusFilter.addEventListener('change', applyFilters);
 placementFilter.addEventListener('change', applyFilters);
 stageFilter.addEventListener('change', applyFilters);
 sortFilter.addEventListener('change', applyFilters);
+viewSelectEl.addEventListener('change', () => {
+  state.activeView = viewSelectEl.value;
+  applyFilters();
+  renderViews(state.publishers);
+});
 
 document.getElementById('clearFiltersButton').addEventListener('click', resetFilters);
 document.getElementById('resetStageButton').addEventListener('click', () => {

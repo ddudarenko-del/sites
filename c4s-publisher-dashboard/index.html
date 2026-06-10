@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>C4S Publisher Dashboard</title>
-    <link rel="stylesheet" href="./styles.css?v=20260610d" />
+    <link rel="stylesheet" href="./styles.css?v=20260610e" />
   </head>
   <body>
     <div class="page">
@@ -23,6 +23,10 @@
 
       <section class="card top-nav-card">
         <div class="view-strip top-view-strip" id="viewStrip"></div>
+        <label class="view-select-wrap" for="viewSelect">
+          <span class="view-select-label">List</span>
+          <select id="viewSelect" class="view-select"></select>
+        </label>
       </section>
 
       <section class="stats" id="stats"></section>
@@ -129,6 +133,6 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260610d" defer></script>
+    <script src="./app.js?v=20260610e" defer></script>
   </body>
 </html>

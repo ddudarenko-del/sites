@@ -321,6 +321,22 @@ h2 {
   margin-bottom: 16px;
 }
 
+.view-select-wrap {
+  display: none;
+  margin: 0;
+}
+
+.view-select-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.view-select {
+  width: 100%;
+}
+
 .top-view-strip {
   margin-bottom: 0;
 }
@@ -842,16 +858,11 @@ tbody tr:hover {
   }
 
   .view-strip {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-inline: -2px;
+    display: none;
   }
 
-  .view-pill {
-    width: auto;
-    min-width: 220px;
-    flex: 0 0 220px;
+  .view-select-wrap {
+    display: block;
   }
 
   .section-head,
