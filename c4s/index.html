@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>C4S Publisher Dashboard</title>
-    <link rel="stylesheet" href="./styles.css?v=20260611a" />
+    <link rel="stylesheet" href="./styles.css?v=20260611b" />
   </head>
   <body>
     <div class="page">
@@ -28,51 +28,16 @@
           <span class="view-select-label">List</span>
           <select id="viewSelect" class="view-select"></select>
         </label>
-      </section>
 
-      <section class="stats" id="stats"></section>
-
-      <section class="workspace">
-        <div class="main-column">
-          <section class="table-wrap card">
-            <div class="table-head">
-              <div>
-                <p class="section-kicker" id="listKicker">Start here</p>
-                <h2 id="listTitle">New sites</h2>
-              </div>
-              <div class="table-head-actions">
-                <p id="resultCount">Loading…</p>
-                <button class="ghost-button" id="clearFiltersButton" type="button" hidden>Back to New</button>
-              </div>
+        <details class="inline-accordion filter-accordion" id="refineAccordion">
+          <summary class="accordion-summary">
+            <div>
+              <p class="section-kicker">Refine view</p>
+              <h2>Search & filters</h2>
             </div>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Publisher</th>
-                    <th>Coverage</th>
-                    <th>Status</th>
-                    <th>Stage</th>
-                    <th>Placements</th>
-                    <th>Deal model</th>
-                    <th>Last touch</th>
-                    <th>Next follow-up</th>
-                    <th>Sources</th>
-                  </tr>
-                </thead>
-                <tbody id="publisherTable"></tbody>
-              </table>
-            </div>
-            <div class="mobile-list" id="mobileList"></div>
-          </section>
-
-          <section class="card controls">
-            <div class="section-head compact-head">
-              <div>
-                <p class="section-kicker">Refine view</p>
-                <h2>Search & filters</h2>
-              </div>
-            </div>
+            <span class="accordion-arrow" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion-body">
             <div class="control-grid">
               <label>
                 <span>Search domain</span>
@@ -106,17 +71,74 @@
                 </select>
               </label>
             </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="stats" id="stats"></section>
+
+      <section class="workspace">
+        <div class="main-column">
+          <section class="table-wrap card">
+            <div class="table-head">
+              <div>
+                <p class="section-kicker" id="listKicker">Start here</p>
+                <h2 id="listTitle">New sites</h2>
+              </div>
+              <div class="table-head-actions">
+                <p id="resultCount">Loading…</p>
+                <button class="ghost-button" id="toggleAddSiteButton" type="button">Add site</button>
+                <button class="ghost-button" id="clearFiltersButton" type="button" hidden>Back to New</button>
+              </div>
+            </div>
+            <div class="inline-add-site" id="addSitePanel" hidden>
+              <div class="inline-add-site-grid">
+                <label class="inline-add-site-field">
+                  <span>New site</span>
+                  <input id="addSiteInput" type="url" inputmode="url" placeholder="example.com or https://example.com" />
+                </label>
+                <button class="ghost-button add-site-submit" id="addSiteSubmitButton" type="button">Add to New</button>
+              </div>
+              <p class="inline-feedback" id="addSiteMessage" hidden></p>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Publisher</th>
+                    <th>Coverage</th>
+                    <th>Status</th>
+                    <th>Stage</th>
+                    <th>Placements</th>
+                    <th>Deal model</th>
+                    <th>Last touch</th>
+                    <th>Next follow-up</th>
+                    <th>Sources</th>
+                  </tr>
+                </thead>
+                <tbody id="publisherTable"></tbody>
+              </table>
+            </div>
+            <div class="mobile-list" id="mobileList"></div>
           </section>
 
           <section class="card section-card">
             <div class="section-head">
               <div>
                 <p class="section-kicker">Pipeline</p>
-                <h2>Stages</h2>
+                <h2>Pipeline Stages</h2>
               </div>
               <button class="ghost-button" id="resetStageButton" type="button" hidden>Reset stage filter</button>
             </div>
-            <div class="pipeline-board" id="pipelineBoard"></div>
+            <details class="inline-accordion pipeline-accordion" id="pipelineAccordion">
+              <summary class="accordion-summary accordion-summary-tight">
+                <span>Show pipeline stages</span>
+                <span class="accordion-arrow" aria-hidden="true"></span>
+              </summary>
+              <div class="accordion-body accordion-body-tight">
+                <div class="pipeline-board" id="pipelineBoard"></div>
+              </div>
+            </details>
           </section>
 
           <section class="card section-card">
@@ -140,6 +162,6 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260611a" defer></script>
+    <script src="./app.js?v=20260611b" defer></script>
   </body>
 </html>

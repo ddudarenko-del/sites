@@ -1,5 +1,6 @@
 const state = {
   rawPublishers: [],
+  manualPublishers: [],
   publishers: [],
   filtered: [],
   meta: {},
@@ -10,6 +11,7 @@ const state = {
 };
 
 const STAGE_OVERRIDE_STORAGE_KEY = 'c4s-dashboard-stage-overrides-v2';
+const MANUAL_PUBLISHERS_STORAGE_KEY = 'c4s-dashboard-manual-publishers-v1';
 
 const MOVE_STAGE_OPTIONS = [
   { key: 'researching', label: 'New' },
@@ -136,6 +138,7 @@ const queueGridEl = document.getElementById('queueGrid');
 const viewStripEl = document.getElementById('viewStrip');
 const viewSelectEl = document.getElementById('viewSelect');
 const tableEl = document.getElementById('publisherTable');
+const tableScrollEl = document.querySelector('.table-scroll');
 const mobileListEl = document.getElementById('mobileList');
 const resultCountEl = document.getElementById('resultCount');
 const heroTitleEl = document.getElementById('heroTitle');
@@ -151,6 +154,11 @@ const insightsCardEl = document.getElementById('insightsCard');
 const clearFiltersButtonEl = document.getElementById('clearFiltersButton');
 const resetStageButtonEl = document.getElementById('resetStageButton');
 const resetQueueButtonEl = document.getElementById('resetQueueButton');
+const toggleAddSiteButtonEl = document.getElementById('toggleAddSiteButton');
+const addSitePanelEl = document.getElementById('addSitePanel');
+const addSiteInputEl = document.getElementById('addSiteInput');
+const addSiteSubmitButtonEl = document.getElementById('addSiteSubmitButton');
+const addSiteMessageEl = document.getElementById('addSiteMessage');
 
 function slug(value) {
   return String(value || 'default').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'default';
@@ -204,6 +212,29 @@ function publisherUrl(domain) {
   if (!value) return '#';
   if (/^https?:\/\//i.test(value)) return value;
   return `https://${value}`;
+}
+
+function normalizeDomain(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  const withProtocol = /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+
+  try {
+    const url = new URL(withProtocol);
+    return url.hostname.replace(/^www\./, '').trim();
+  } catch (error) {
+    return raw
+      .replace(/^https?:\/\//, '')
+      .replace(/^www\./, '')
+      .split('/')[0]
+      .split('?')[0]
+      .split('#')[0]
+      .trim();
+  }
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 function prettyLabel(value) {
@@ -283,6 +314,109 @@ function saveStageOverrides() {
   }
 }
 
+function loadManualPublishers() {
+  try {
+    const raw = window.localStorage.getItem(MANUAL_PUBLISHERS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.warn('Failed to load manual publishers', error);
+    return [];
+  }
+}
+
+function saveManualPublishers() {
+  try {
+    window.localStorage.setItem(MANUAL_PUBLISHERS_STORAGE_KEY, JSON.stringify(state.manualPublishers));
+  } catch (error) {
+    console.warn('Failed to save manual publishers', error);
+  }
+}
+
+function nextPublisherId() {
+  const maxNumericId = [...state.rawPublishers, ...state.manualPublishers].reduce((max, item) => {
+    const match = String(item.id || '').match(/^pub-(\d+)$/i);
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+
+  return `pub-${String(maxNumericId + 1).padStart(3, '0')}`;
+}
+
+function findDuplicatePublisher(domain) {
+  const normalized = normalizeDomain(domain);
+  return state.publishers.find(item => normalizeDomain(item.domain) === normalized) || null;
+}
+
+function buildManualPublisher(domain) {
+  const today = todayIso();
+  return {
+    id: nextPublisherId(),
+    domain,
+    status: 'prospect',
+    relationship_stage: 'researching',
+    fit_status: 'unverified',
+    deal_model: 'unknown',
+    placement_types: ['banner'],
+    niche: null,
+    geo: [],
+    languages: [],
+    source_labels: ['Manual add / dashboard'],
+    last_contact: null,
+    next_followup: null,
+    visibility: 'team-safe',
+    created_at: today,
+    updated_at: today,
+    segment: 'manual_add',
+  };
+}
+
+function setAddSiteMessage(message, tone = 'success') {
+  addSiteMessageEl.textContent = message;
+  addSiteMessageEl.className = `inline-feedback ${tone}`;
+  addSiteMessageEl.hidden = !message;
+}
+
+function toggleAddSitePanel(forceOpen) {
+  const willOpen = typeof forceOpen === 'boolean' ? forceOpen : addSitePanelEl.hidden;
+  addSitePanelEl.hidden = !willOpen;
+
+  if (willOpen) {
+    window.setTimeout(() => addSiteInputEl.focus(), 0);
+  } else {
+    addSiteInputEl.value = '';
+    setAddSiteMessage('');
+  }
+}
+
+function addPublisherFromInput() {
+  const normalized = normalizeDomain(addSiteInputEl.value);
+
+  if (!normalized || !normalized.includes('.')) {
+    setAddSiteMessage('Enter a valid domain first.', 'error');
+    addSiteInputEl.focus();
+    return;
+  }
+
+  const duplicate = findDuplicatePublisher(normalized);
+  if (duplicate) {
+    resetFilters();
+    state.activeView = isNewLead(duplicate) ? 'new' : 'all';
+    searchInput.value = duplicate.domain;
+    setAddSiteMessage(`${duplicate.domain} is already in the list as ${duplicate.id}.`, 'error');
+    applyFilters();
+    renderViews(state.publishers);
+    return;
+  }
+
+  state.manualPublishers.unshift(buildManualPublisher(normalized));
+  saveManualPublishers();
+  rebuildPublishers();
+  resetFilters();
+  addSiteInputEl.value = '';
+  setAddSiteMessage(`${normalized} added to New.`, 'success');
+}
+
 function applyStageOverride(item, stageKey) {
   if (!stageKey) return { ...item };
 
@@ -323,7 +457,8 @@ function applyStageOverride(item, stageKey) {
 
 function rebuildPublishers() {
   state.publishers = withDerivedData(
-    state.rawPublishers.map(item => applyStageOverride(item, state.stageOverrides[item.id]))
+    [...state.manualPublishers, ...state.rawPublishers]
+      .map(item => applyStageOverride(item, state.stageOverrides[item.id]))
   );
 }
 
@@ -387,9 +522,15 @@ function updateActionButtons() {
     && stageFilter.value === 'all'
     && sortFilter.value === 'updated_desc';
 
+  const canAddNewSite = state.activeView === 'new';
   clearFiltersButtonEl.hidden = atDefaultNewView;
   resetStageButtonEl.hidden = state.activeStage === 'all' && stageFilter.value === 'all';
   resetQueueButtonEl.hidden = state.activeQueue === 'all';
+  toggleAddSiteButtonEl.hidden = !canAddNewSite;
+
+  if (!canAddNewSite) {
+    toggleAddSitePanel(false);
+  }
 }
 
 function calculateMetrics(rows) {
@@ -754,12 +895,15 @@ function renderMobileCards(rows) {
     const percent = Math.round((score / 6) * 100);
     return `
       <details class="mobile-card mobile-card-shell">
-        <summary class="mobile-card-summary">
+        <summary class="mobile-card-summary ${quickMoveView ? 'mobile-card-summary-with-actions' : ''}">
           <a class="domain-link mobile-domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${item.domain}</a>
-          <span class="mobile-card-arrow" aria-hidden="true"></span>
+          ${quickMoveView ? `
+            <div class="mobile-card-summary-actions">
+              ${renderMoveControl(item, 'mobile-summary')}
+              <span class="mobile-card-arrow" aria-hidden="true"></span>
+            </div>
+          ` : '<span class="mobile-card-arrow" aria-hidden="true"></span>'}
         </summary>
-
-        ${quickMoveView ? `<div class="mobile-quick-move">${renderMoveControl(item, 'mobile-quick')}</div>` : ''}
 
         <div class="mobile-card-body">
           <div class="meta-line mobile-meta-line">${item.id}</div>
@@ -814,10 +958,14 @@ function renderMobileCards(rows) {
 
 function renderTable() {
   const view = currentView();
+  const compactStartHere = view.key === 'new';
   listKickerEl.textContent = view.key === 'new' ? 'Start here' : 'Publisher register';
   listTitleEl.textContent = view.key === 'new' ? 'New sites' : view.label;
   resultCountEl.textContent = `${state.filtered.length} shown`;
   updateActionButtons();
+
+  tableScrollEl.classList.toggle('compact-hidden', compactStartHere);
+  mobileListEl.classList.toggle('force-visible', compactStartHere);
 
   if (!state.filtered.length) {
     tableEl.innerHTML = '<tr><td class="empty" colspan="9">No publishers match the filters.</td></tr>';
@@ -899,10 +1047,11 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json?v=20260610f');
+  const res = await fetch('./data/publishers.dashboard.json?v=20260611b');
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.rawPublishers = payload.publishers || [];
+  state.manualPublishers = loadManualPublishers();
   state.stageOverrides = loadStageOverrides();
   rebuildPublishers();
   refreshDashboardChrome();
@@ -929,6 +1078,16 @@ resetQueueButtonEl.addEventListener('click', () => {
   state.activeQueue = 'all';
   renderQueues(state.publishers);
   applyFilters();
+});
+toggleAddSiteButtonEl.addEventListener('click', () => {
+  toggleAddSitePanel();
+});
+addSiteSubmitButtonEl.addEventListener('click', addPublisherFromInput);
+addSiteInputEl.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    addPublisherFromInput();
+  }
 });
 
 init().catch(err => {

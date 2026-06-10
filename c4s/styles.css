@@ -72,6 +72,63 @@ select {
   margin-bottom: 18px;
 }
 
+.inline-accordion {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.025);
+  overflow: hidden;
+}
+
+.accordion-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-summary h2,
+.accordion-summary p {
+  pointer-events: none;
+}
+
+.accordion-summary-tight {
+  padding: 14px 16px;
+  font-weight: 700;
+}
+
+.accordion-arrow {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 180ms ease, border-color 180ms ease;
+  margin-right: 4px;
+}
+
+.inline-accordion[open] .accordion-arrow {
+  transform: rotate(225deg);
+  border-color: var(--accent-2);
+}
+
+.accordion-body {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--line);
+}
+
+.accordion-body-tight {
+  padding: 14px 16px 16px;
+}
+
 .eyebrow,
 .section-kicker {
   margin: 0 0 10px;
@@ -220,6 +277,10 @@ h2 {
 
 .compact-head {
   margin-bottom: 14px;
+}
+
+.filter-accordion {
+  margin-top: 18px;
 }
 
 .ghost-button {
@@ -382,6 +443,42 @@ h2 {
   gap: 12px;
 }
 
+.inline-add-site {
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.03);
+}
+
+.inline-add-site-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.inline-add-site-field {
+  margin: 0;
+}
+
+.add-site-submit {
+  min-width: 160px;
+}
+
+.inline-feedback {
+  margin: 12px 2px 0;
+  font-size: 14px;
+}
+
+.inline-feedback.success {
+  color: var(--ok);
+}
+
+.inline-feedback.error {
+  color: var(--danger);
+}
+
 label span {
   display: block;
   margin-bottom: 8px;
@@ -432,8 +529,22 @@ select:focus {
 }
 
 .move-control-mobile-quick,
-.move-control-mobile-expanded {
+.move-control-mobile-expanded,
+.move-control-mobile-summary {
   width: 100%;
+}
+
+.move-control-mobile-summary {
+  min-width: 168px;
+}
+
+.move-control-mobile-summary .move-control-label {
+  margin-bottom: 4px;
+}
+
+.move-control-mobile-summary select {
+  min-height: 36px;
+  padding: 7px 10px;
 }
 
 .table-stage-cell {
@@ -448,6 +559,14 @@ select:focus {
 }
 
 .mobile-list {
+  display: none;
+}
+
+.mobile-list.force-visible {
+  display: block;
+}
+
+.table-scroll.compact-hidden {
   display: none;
 }
 
@@ -636,6 +755,22 @@ tbody tr:hover {
   margin-top: 12px;
 }
 
+.mobile-list.force-visible .mobile-card-shell {
+  background: rgba(255,255,255,0.03);
+}
+
+.mobile-list.force-visible .mobile-card-summary {
+  padding: 18px;
+}
+
+.mobile-list.force-visible .mobile-card-body {
+  padding: 0 18px 18px;
+}
+
+.mobile-list.force-visible .mobile-quick-move {
+  padding: 0 18px 18px;
+}
+
 .mobile-card-summary {
   display: flex;
   justify-content: space-between;
@@ -644,6 +779,16 @@ tbody tr:hover {
   padding: 16px;
   cursor: pointer;
   list-style: none;
+}
+
+.mobile-card-summary-with-actions {
+  align-items: flex-start;
+}
+
+.mobile-card-summary-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 .mobile-card-summary::-webkit-details-marker {
@@ -852,6 +997,10 @@ tbody tr:hover {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .inline-add-site-grid {
+    grid-template-columns: 1fr;
+  }
+
   .queue-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -879,6 +1028,10 @@ tbody tr:hover {
   .controls,
   .table-wrap,
   .side-card {
+    padding: 16px;
+  }
+
+  .top-nav-card {
     padding: 16px;
   }
 
@@ -910,6 +1063,16 @@ tbody tr:hover {
   .queue-grid,
   .dual-metric {
     grid-template-columns: 1fr;
+  }
+
+  .accordion-body,
+  .accordion-body-tight {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .accordion-summary {
+    padding: 14px;
   }
 
   .view-strip {
@@ -947,6 +1110,12 @@ tbody tr:hover {
 
   .mobile-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mobile-card-summary-with-actions,
+  .mobile-card-summary-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
