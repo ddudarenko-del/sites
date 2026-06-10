@@ -1,10 +1,11 @@
 {
   "meta": {
     "generated_from": "data/publishers.json",
-    "publisher_count": 51,
+    "publisher_count": 63,
     "status_counts": {
       "active": 41,
-      "prospect": 10
+      "prospect": 20,
+      "no-fit": 2
     },
     "safe_fields": [
       "id",
@@ -1181,6 +1182,304 @@
       "next_followup": null,
       "created_at": "2026-06-09",
       "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "femdomdestiny.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom directory",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / femdom site banner sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-052"
+    },
+    {
+      "domain": "femdomcity.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom traffic hub",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / femdom site banner sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-053"
+    },
+    {
+      "domain": "femdomu.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom magazine",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / femdom site banner sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-054"
+    },
+    {
+      "domain": "lust4fetish.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "fetish directory",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / fetish forum banner advertise / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-055"
+    },
+    {
+      "domain": "femdomplanet.net",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom directory",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / female domination website sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-056"
+    },
+    {
+      "domain": "sizetube.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess video",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / giantess video site / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-057"
+    },
+    {
+      "domain": "giantess-interactive.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess interactive",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / giantess site banner sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-058"
+    },
+    {
+      "domain": "giantesskatelyn.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess creator site",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / giantess video site / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-059"
+    },
+    {
+      "domain": "facesittinggirls.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "facesitting directory",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / facesitting site banner advertise / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-060"
+    },
+    {
+      "domain": "realspankings.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "spanking network",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / spanking site banner advertise / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-061"
+    },
+    {
+      "domain": "femdoming.com",
+      "status": "no-fit",
+      "relationship_stage": "no_fit",
+      "fit_status": "rejected",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom directory",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / femdom site banner sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "reached",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-062"
+    },
+    {
+      "domain": "dommesource.com",
+      "status": "no-fit",
+      "relationship_stage": "no_fit",
+      "fit_status": "rejected",
+      "deal_model": "unknown",
+      "placement_types": [],
+      "niche": "femdom resources",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "google / female domination website sponsor / 2026-06-10"
+      ],
+      "visibility": "team-safe",
+      "segment": "reached",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-10",
+      "updated_at": "2026-06-10",
+      "id": "pub-063"
     }
   ]
 }
