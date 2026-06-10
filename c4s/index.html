@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>C4S Publisher Dashboard</title>
-    <link rel="stylesheet" href="./styles.css?v=20260611b" />
+    <link rel="stylesheet" href="./styles.css?v=20260611c" />
   </head>
   <body>
     <div class="page">
@@ -88,6 +88,7 @@
               <div class="table-head-actions">
                 <p id="resultCount">Loading…</p>
                 <button class="ghost-button" id="toggleAddSiteButton" type="button">Add site</button>
+                <button class="ghost-button" id="toggleGitPanelButton" type="button">Connect Git</button>
                 <button class="ghost-button" id="clearFiltersButton" type="button" hidden>Back to New</button>
               </div>
             </div>
@@ -100,6 +101,20 @@
                 <button class="ghost-button add-site-submit" id="addSiteSubmitButton" type="button">Add to New</button>
               </div>
               <p class="inline-feedback" id="addSiteMessage" hidden></p>
+            </div>
+            <div class="inline-git-panel" id="gitPanel" hidden>
+              <div class="inline-git-grid">
+                <label class="inline-add-site-field">
+                  <span>GitHub token</span>
+                  <input id="gitTokenInput" type="password" autocomplete="off" placeholder="Fine-grained PAT for ddudarenko-del/sites" />
+                </label>
+                <div class="inline-git-actions">
+                  <button class="ghost-button add-site-submit" id="saveGitTokenButton" type="button">Save token</button>
+                  <button class="ghost-button" id="clearGitTokenButton" type="button" hidden>Clear</button>
+                </div>
+              </div>
+              <p class="inline-hint">Stored only in this browser. Use a fine-grained token with repository contents read/write on <code>ddudarenko-del/sites</code>.</p>
+              <p class="inline-feedback" id="gitStatusMessage" hidden></p>
             </div>
             <div class="table-scroll">
               <table>
@@ -162,6 +177,6 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260611b" defer></script>
+    <script src="./app.js?v=20260611c" defer></script>
   </body>
 </html>

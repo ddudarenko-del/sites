@@ -451,11 +451,26 @@ h2 {
   background: rgba(255,255,255,0.03);
 }
 
-.inline-add-site-grid {
+.inline-git-panel {
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.03);
+}
+
+.inline-add-site-grid,
+.inline-git-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   align-items: end;
+}
+
+.inline-git-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .inline-add-site-field {
@@ -466,9 +481,20 @@ h2 {
   min-width: 160px;
 }
 
+.inline-hint {
+  margin: 10px 2px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 .inline-feedback {
   margin: 12px 2px 0;
   font-size: 14px;
+}
+
+.inline-feedback.info {
+  color: var(--muted);
 }
 
 .inline-feedback.success {
@@ -997,8 +1023,14 @@ tbody tr:hover {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .inline-add-site-grid {
+  .inline-add-site-grid,
+  .inline-git-grid {
     grid-template-columns: 1fr;
+  }
+
+  .inline-git-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .queue-grid {

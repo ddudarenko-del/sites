@@ -8,10 +8,16 @@ const state = {
   activeStage: 'all',
   activeQueue: 'all',
   stageOverrides: {},
+  githubToken: '',
 };
 
-const STAGE_OVERRIDE_STORAGE_KEY = 'c4s-dashboard-stage-overrides-v2';
-const MANUAL_PUBLISHERS_STORAGE_KEY = 'c4s-dashboard-manual-publishers-v1';
+const GITHUB_TOKEN_STORAGE_KEY = 'c4s-dashboard-github-token-v1';
+const GITHUB_OWNER = 'ddudarenko-del';
+const GITHUB_REPO = 'sites';
+const GITHUB_BRANCH = 'main';
+const GITHUB_DATA_PATH = 'c4s/data/publishers.dashboard.json';
+const DASHBOARD_DATA_URL = './data/publishers.dashboard.json';
+const GITHUB_API_VERSION = '2022-11-28';
 
 const MOVE_STAGE_OPTIONS = [
   { key: 'researching', label: 'New' },
@@ -155,10 +161,63 @@ const clearFiltersButtonEl = document.getElementById('clearFiltersButton');
 const resetStageButtonEl = document.getElementById('resetStageButton');
 const resetQueueButtonEl = document.getElementById('resetQueueButton');
 const toggleAddSiteButtonEl = document.getElementById('toggleAddSiteButton');
+const toggleGitPanelButtonEl = document.getElementById('toggleGitPanelButton');
 const addSitePanelEl = document.getElementById('addSitePanel');
+const gitPanelEl = document.getElementById('gitPanel');
 const addSiteInputEl = document.getElementById('addSiteInput');
+const gitTokenInputEl = document.getElementById('gitTokenInput');
 const addSiteSubmitButtonEl = document.getElementById('addSiteSubmitButton');
+const saveGitTokenButtonEl = document.getElementById('saveGitTokenButton');
+const clearGitTokenButtonEl = document.getElementById('clearGitTokenButton');
 const addSiteMessageEl = document.getElementById('addSiteMessage');
+const gitStatusMessageEl = document.getElementById('gitStatusMessage');
+
+function setGitStatusMessage(message, tone = 'info') {
+  gitStatusMessageEl.textContent = message;
+  gitStatusMessageEl.className = `inline-feedback ${tone}`;
+  gitStatusMessageEl.hidden = !message;
+}
+
+function toggleGitPanel(forceOpen) {
+  const willOpen = typeof forceOpen === 'boolean' ? forceOpen : gitPanelEl.hidden;
+  gitPanelEl.hidden = !willOpen;
+
+  if (willOpen) {
+    window.setTimeout(() => gitTokenInputEl.focus(), 0);
+  } else {
+    gitTokenInputEl.value = '';
+  }
+}
+
+function setGitControlsBusy(isBusy) {
+  [toggleGitPanelButtonEl, saveGitTokenButtonEl, clearGitTokenButtonEl, addSiteSubmitButtonEl, toggleAddSiteButtonEl].forEach(element => {
+    if (element) {
+      element.disabled = isBusy;
+    }
+  });
+
+  if (gitTokenInputEl) {
+    gitTokenInputEl.disabled = isBusy;
+  }
+}
+
+function updateGitPanelUI() {
+  const configured = hasGitHubToken();
+  toggleGitPanelButtonEl.textContent = configured ? 'Git ready' : 'Connect Git';
+  saveGitTokenButtonEl.textContent = configured ? 'Replace token' : 'Save token';
+  clearGitTokenButtonEl.hidden = !configured;
+  gitTokenInputEl.placeholder = configured
+    ? 'Token saved on this browser. Paste a new one to replace it.'
+    : 'Fine-grained PAT for ddudarenko-del/sites';
+}
+
+function requireGitWriteAccess(actionLabel) {
+  if (hasGitHubToken()) return true;
+  toggleGitPanel(true);
+  setGitStatusMessage(`${actionLabel} needs a GitHub token on this device.`, 'error');
+  window.setTimeout(() => gitTokenInputEl.focus(), 0);
+  return false;
+}
 
 function slug(value) {
   return String(value || 'default').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'default';
@@ -251,6 +310,135 @@ function sourceShortLabel(label) {
     .trim();
 }
 
+function encodeBase64Utf8(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = '';
+  bytes.forEach(byte => {
+    binary += String.fromCharCode(byte);
+  });
+  return window.btoa(binary);
+}
+
+function decodeBase64Utf8(base64Text) {
+  const normalized = String(base64Text || '').replace(/\n/g, '');
+  const binary = window.atob(normalized);
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+async function githubApiRequest({ method = 'GET', token, body } = {}) {
+  const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_DATA_PATH}`, {
+    method,
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${token}`,
+      'X-GitHub-Api-Version': GITHUB_API_VERSION,
+      ...(body ? { 'Content-Type': 'application/json' } : {}),
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const raw = await response.text();
+  const data = raw ? (() => {
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      return { message: raw };
+    }
+  })() : null;
+
+  if (!response.ok) {
+    throw new Error(data?.message || `GitHub API failed with status ${response.status}`);
+  }
+
+  return data;
+}
+
+async function fetchGitHubDashboardData(token) {
+  const data = await githubApiRequest({ token });
+  return {
+    payload: JSON.parse(decodeBase64Utf8(data.content || '')),
+    sha: data.sha,
+  };
+}
+
+function buildDashboardMeta(publishers, previousMeta = {}) {
+  const statusCounts = {
+    active: 0,
+    prospect: 0,
+    'no-fit': 0,
+  };
+
+  publishers.forEach(item => {
+    if (isPartner(item)) {
+      statusCounts.active += 1;
+    } else if (isNoFit(item)) {
+      statusCounts['no-fit'] += 1;
+    } else {
+      statusCounts.prospect += 1;
+    }
+  });
+
+  return {
+    ...previousMeta,
+    publisher_count: publishers.length,
+    status_counts: statusCounts,
+    source_of_truth: GITHUB_DATA_PATH,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+async function writeGitHubDashboardData(token, payload, sha, message) {
+  return githubApiRequest({
+    method: 'PUT',
+    token,
+    body: {
+      message,
+      content: encodeBase64Utf8(`${JSON.stringify(payload, null, 2)}\n`),
+      sha,
+      branch: GITHUB_BRANCH,
+    },
+  });
+}
+
+function clonePublishers(publishers) {
+  return publishers.map(item => ({
+    ...item,
+    placement_types: [...(item.placement_types || [])],
+    geo: [...(item.geo || [])],
+    languages: [...(item.languages || [])],
+    source_labels: [...(item.source_labels || [])],
+  }));
+}
+
+function syncStateFromPayload(payload) {
+  state.meta = payload.meta || {};
+  state.rawPublishers = Array.isArray(payload.publishers) ? payload.publishers : [];
+  state.manualPublishers = [];
+  state.stageOverrides = {};
+  rebuildPublishers();
+  refreshDashboardChrome();
+}
+
+async function persistDashboardMutation({ message, mutator }) {
+  if (!hasGitHubToken()) {
+    throw new Error('GitHub token is not configured on this device.');
+  }
+
+  const { payload, sha } = await fetchGitHubDashboardData(state.githubToken);
+  const remotePublishers = clonePublishers(Array.isArray(payload.publishers) ? payload.publishers : []);
+  const nextPublishers = mutator(remotePublishers);
+  const nextPayload = {
+    ...payload,
+    meta: buildDashboardMeta(nextPublishers, payload.meta || {}),
+    publishers: nextPublishers,
+  };
+
+  await writeGitHubDashboardData(state.githubToken, nextPayload, sha, message);
+  syncStateFromPayload(nextPayload);
+  return nextPayload;
+}
+
 function derivePublisher(item) {
   const nicheKnown = Boolean(item.niche);
   const geoKnown = Array.isArray(item.geo) && item.geo.length > 0;
@@ -294,48 +482,37 @@ function withDerivedData(rows) {
   }));
 }
 
-function loadStageOverrides() {
+function loadGitHubToken() {
   try {
-    const raw = window.localStorage.getItem(STAGE_OVERRIDE_STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === 'object' ? parsed : {};
+    return window.localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
   } catch (error) {
-    console.warn('Failed to load saved stage overrides', error);
-    return {};
+    console.warn('Failed to load GitHub token', error);
+    return '';
   }
 }
 
-function saveStageOverrides() {
+function saveGitHubToken(token) {
   try {
-    window.localStorage.setItem(STAGE_OVERRIDE_STORAGE_KEY, JSON.stringify(state.stageOverrides));
+    window.localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token);
   } catch (error) {
-    console.warn('Failed to save stage overrides', error);
+    console.warn('Failed to save GitHub token', error);
   }
 }
 
-function loadManualPublishers() {
+function clearGitHubToken() {
   try {
-    const raw = window.localStorage.getItem(MANUAL_PUBLISHERS_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    window.localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
   } catch (error) {
-    console.warn('Failed to load manual publishers', error);
-    return [];
+    console.warn('Failed to clear GitHub token', error);
   }
 }
 
-function saveManualPublishers() {
-  try {
-    window.localStorage.setItem(MANUAL_PUBLISHERS_STORAGE_KEY, JSON.stringify(state.manualPublishers));
-  } catch (error) {
-    console.warn('Failed to save manual publishers', error);
-  }
+function hasGitHubToken() {
+  return Boolean(state.githubToken);
 }
 
-function nextPublisherId() {
-  const maxNumericId = [...state.rawPublishers, ...state.manualPublishers].reduce((max, item) => {
+function nextPublisherId(publishers = state.rawPublishers) {
+  const maxNumericId = publishers.reduce((max, item) => {
     const match = String(item.id || '').match(/^pub-(\d+)$/i);
     return match ? Math.max(max, Number(match[1])) : max;
   }, 0);
@@ -348,10 +525,10 @@ function findDuplicatePublisher(domain) {
   return state.publishers.find(item => normalizeDomain(item.domain) === normalized) || null;
 }
 
-function buildManualPublisher(domain) {
+function buildManualPublisher(domain, publishers = state.rawPublishers) {
   const today = todayIso();
   return {
-    id: nextPublisherId(),
+    id: nextPublisherId(publishers),
     domain,
     status: 'prospect',
     relationship_stage: 'researching',
@@ -361,7 +538,7 @@ function buildManualPublisher(domain) {
     niche: null,
     geo: [],
     languages: [],
-    source_labels: ['Manual add / dashboard'],
+    source_labels: ['Manual add / Git dashboard'],
     last_contact: null,
     next_followup: null,
     visibility: 'team-safe',
@@ -369,6 +546,16 @@ function buildManualPublisher(domain) {
     updated_at: today,
     segment: 'manual_add',
   };
+}
+
+function focusPublisher(domain) {
+  const duplicate = findDuplicatePublisher(domain);
+  if (!duplicate) return;
+  resetFilters();
+  state.activeView = isNewLead(duplicate) ? 'new' : 'all';
+  searchInput.value = duplicate.domain;
+  applyFilters();
+  renderViews(state.publishers);
 }
 
 function setAddSiteMessage(message, tone = 'success') {
@@ -389,7 +576,40 @@ function toggleAddSitePanel(forceOpen) {
   }
 }
 
-function addPublisherFromInput() {
+async function connectGitToken() {
+  const token = gitTokenInputEl.value.trim();
+
+  if (!token) {
+    setGitStatusMessage('Paste a GitHub token first.', 'error');
+    gitTokenInputEl.focus();
+    return;
+  }
+
+  try {
+    setGitControlsBusy(true);
+    await fetchGitHubDashboardData(token);
+    state.githubToken = token;
+    saveGitHubToken(token);
+    gitTokenInputEl.value = '';
+    updateGitPanelUI();
+    setGitStatusMessage(`Git writes are enabled on this browser. Changes now save to ${GITHUB_DATA_PATH}.`, 'success');
+  } catch (error) {
+    console.error(error);
+    setGitStatusMessage(error.message || 'Git token validation failed.', 'error');
+  } finally {
+    setGitControlsBusy(false);
+  }
+}
+
+function disconnectGitToken() {
+  state.githubToken = '';
+  clearGitHubToken();
+  gitTokenInputEl.value = '';
+  updateGitPanelUI();
+  setGitStatusMessage('Git token removed from this browser. The dashboard is read-only again.', 'info');
+}
+
+async function addPublisherFromInput() {
   const normalized = normalizeDomain(addSiteInputEl.value);
 
   if (!normalized || !normalized.includes('.')) {
@@ -400,21 +620,45 @@ function addPublisherFromInput() {
 
   const duplicate = findDuplicatePublisher(normalized);
   if (duplicate) {
-    resetFilters();
-    state.activeView = isNewLead(duplicate) ? 'new' : 'all';
-    searchInput.value = duplicate.domain;
+    focusPublisher(duplicate.domain);
     setAddSiteMessage(`${duplicate.domain} is already in the list as ${duplicate.id}.`, 'error');
-    applyFilters();
-    renderViews(state.publishers);
     return;
   }
 
-  state.manualPublishers.unshift(buildManualPublisher(normalized));
-  saveManualPublishers();
-  rebuildPublishers();
-  resetFilters();
-  addSiteInputEl.value = '';
-  setAddSiteMessage(`${normalized} added to New.`, 'success');
+  if (!requireGitWriteAccess('Adding a new site')) {
+    setAddSiteMessage('Connect Git first, then try adding the site again.', 'error');
+    return;
+  }
+
+  try {
+    setGitControlsBusy(true);
+    await persistDashboardMutation({
+      message: `c4s: add publisher ${normalized}`,
+      mutator: publishers => {
+        const existing = publishers.find(item => normalizeDomain(item.domain) === normalized);
+        if (existing) {
+          const duplicateError = new Error(`${existing.domain} is already in the list as ${existing.id}.`);
+          duplicateError.duplicateDomain = existing.domain;
+          throw duplicateError;
+        }
+        return [buildManualPublisher(normalized, publishers), ...publishers];
+      },
+    });
+
+    resetFilters();
+    addSiteInputEl.value = '';
+    setAddSiteMessage(`${normalized} saved to Git and added to New.`, 'success');
+    setGitStatusMessage(`${normalized} was committed to ${GITHUB_DATA_PATH}.`, 'success');
+  } catch (error) {
+    console.error(error);
+    if (error.duplicateDomain) {
+      focusPublisher(error.duplicateDomain);
+    }
+    setAddSiteMessage(error.message || 'Failed to save the new site to Git.', 'error');
+    setGitStatusMessage(error.message || 'Failed to save the new site to Git.', 'error');
+  } finally {
+    setGitControlsBusy(false);
+  }
 }
 
 function applyStageOverride(item, stageKey) {
@@ -457,8 +701,7 @@ function applyStageOverride(item, stageKey) {
 
 function rebuildPublishers() {
   state.publishers = withDerivedData(
-    [...state.manualPublishers, ...state.rawPublishers]
-      .map(item => applyStageOverride(item, state.stageOverrides[item.id]))
+    state.rawPublishers.map(item => ({ ...item }))
   );
 }
 
@@ -495,18 +738,63 @@ function refreshDashboardChrome() {
   applyFilters();
 }
 
-function updatePublisherStage(id, nextStage) {
-  state.stageOverrides[id] = nextStage;
-  saveStageOverrides();
-  rebuildPublishers();
-  refreshDashboardChrome();
+async function updatePublisherStage(id, nextStage) {
+  const currentItem = state.rawPublishers.find(item => item.id === id);
+  if (!currentItem) {
+    setGitStatusMessage('That publisher could not be found in the Git JSON file.', 'error');
+    refreshDashboardChrome();
+    return false;
+  }
+
+  if (!requireGitWriteAccess('Saving status changes')) {
+    refreshDashboardChrome();
+    return false;
+  }
+
+  const nextOption = MOVE_STAGE_OPTIONS.find(option => option.key === nextStage);
+  const nextLabel = nextOption ? nextOption.label : nextStage;
+
+  try {
+    setGitControlsBusy(true);
+    await persistDashboardMutation({
+      message: `c4s: move ${currentItem.domain} to ${nextStage}`,
+      mutator: publishers => {
+        const index = publishers.findIndex(item => item.id === id);
+        if (index === -1) {
+          throw new Error(`${currentItem.domain} no longer exists in ${GITHUB_DATA_PATH}.`);
+        }
+
+        const nextPublishers = [...publishers];
+        nextPublishers[index] = {
+          ...applyStageOverride(publishers[index], nextStage),
+          updated_at: todayIso(),
+        };
+        return nextPublishers;
+      },
+    });
+
+    setGitStatusMessage(`${currentItem.domain} saved to Git as ${nextLabel}.`, 'success');
+    return true;
+  } catch (error) {
+    console.error(error);
+    setGitStatusMessage(error.message || 'Failed to save the stage change to Git.', 'error');
+    refreshDashboardChrome();
+    return false;
+  } finally {
+    setGitControlsBusy(false);
+  }
 }
 
 function bindStageMoveControls(scope = document) {
   scope.querySelectorAll('[data-stage-move]').forEach(select => {
-    select.addEventListener('change', event => {
+    select.addEventListener('change', async event => {
       event.stopPropagation();
-      updatePublisherStage(select.dataset.stageMove, select.value);
+      select.disabled = true;
+      try {
+        await updatePublisherStage(select.dataset.stageMove, select.value);
+      } finally {
+        select.disabled = false;
+      }
     });
     select.addEventListener('click', event => event.stopPropagation());
   });
@@ -1047,12 +1335,18 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json?v=20260611b');
+  state.githubToken = loadGitHubToken();
+  updateGitPanelUI();
+  if (hasGitHubToken()) {
+    setGitStatusMessage(`Git writes on this browser go straight to ${GITHUB_DATA_PATH}.`, 'success');
+  }
+
+  const res = await fetch(`${DASHBOARD_DATA_URL}?v=${Date.now()}`);
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.rawPublishers = payload.publishers || [];
-  state.manualPublishers = loadManualPublishers();
-  state.stageOverrides = loadStageOverrides();
+  state.manualPublishers = [];
+  state.stageOverrides = {};
   rebuildPublishers();
   refreshDashboardChrome();
 }
@@ -1082,11 +1376,22 @@ resetQueueButtonEl.addEventListener('click', () => {
 toggleAddSiteButtonEl.addEventListener('click', () => {
   toggleAddSitePanel();
 });
+toggleGitPanelButtonEl.addEventListener('click', () => {
+  toggleGitPanel();
+});
 addSiteSubmitButtonEl.addEventListener('click', addPublisherFromInput);
+saveGitTokenButtonEl.addEventListener('click', connectGitToken);
+clearGitTokenButtonEl.addEventListener('click', disconnectGitToken);
 addSiteInputEl.addEventListener('keydown', event => {
   if (event.key === 'Enter') {
     event.preventDefault();
     addPublisherFromInput();
+  }
+});
+gitTokenInputEl.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    connectGitToken();
   }
 });
 
