@@ -157,6 +157,7 @@ const overviewCardEl = document.getElementById('overviewCard');
 const coverageCardEl = document.getElementById('coverageCard');
 const placementCardEl = document.getElementById('placementCard');
 const insightsCardEl = document.getElementById('insightsCard');
+const primaryListCardEl = document.getElementById('primaryListCard');
 const clearFiltersButtonEl = document.getElementById('clearFiltersButton');
 const resetStageButtonEl = document.getElementById('resetStageButton');
 const resetQueueButtonEl = document.getElementById('resetQueueButton');
@@ -264,6 +265,10 @@ function daysFromToday(value) {
 
 function safeDate(value) {
   return value || '—';
+}
+
+function addedLabel(value) {
+  return `Added ${safeDate(value)}`;
 }
 
 function publisherUrl(domain) {
@@ -1184,7 +1189,10 @@ function renderMobileCards(rows) {
     return `
       <details class="mobile-card mobile-card-shell">
         <summary class="mobile-card-summary ${quickMoveView ? 'mobile-card-summary-with-actions' : ''}">
-          <a class="domain-link mobile-domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${item.domain}</a>
+          <div class="mobile-summary-primary">
+            <a class="domain-link mobile-domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${item.domain}</a>
+            <span class="summary-submeta">${addedLabel(item.created_at)}</span>
+          </div>
           ${quickMoveView ? `
             <div class="mobile-card-summary-actions">
               ${renderMoveControl(item, 'mobile-summary')}
@@ -1224,6 +1232,10 @@ function renderMobileCards(rows) {
               <strong>${item.deal_model ? prettyLabel(item.deal_model) : '—'}</strong>
             </div>
             <div class="mobile-kv">
+              <span class="stack-label">Added</span>
+              <strong>${safeDate(item.created_at)}</strong>
+            </div>
+            <div class="mobile-kv">
               <span class="stack-label">Last touch</span>
               <strong>${safeDate(item.last_contact)}</strong>
             </div>
@@ -1251,6 +1263,7 @@ function renderTable() {
   listTitleEl.textContent = view.key === 'new' ? 'New sites' : view.label;
   resultCountEl.textContent = `${state.filtered.length} shown`;
   updateActionButtons();
+  primaryListCardEl.classList.toggle('primary-focus', compactStartHere);
 
   tableScrollEl.classList.toggle('compact-hidden', compactStartHere);
   mobileListEl.classList.toggle('force-visible', compactStartHere);
@@ -1268,7 +1281,7 @@ function renderTable() {
       <tr>
         <td>
           <div class="domain"><a class="domain-link" href="${publisherUrl(item.domain)}" target="_blank" rel="noopener noreferrer">${item.domain}</a></div>
-          <div class="meta-line">${item.id}</div>
+          <div class="meta-line">${item.id} · ${addedLabel(item.created_at)}</div>
         </td>
         <td>
           <div class="coverage">
