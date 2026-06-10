@@ -666,7 +666,7 @@ function resetFilters() {
 }
 
 async function init() {
-  const res = await fetch('./data/publishers.dashboard.json');
+  const res = await fetch('./data/publishers.dashboard.json?v=20260609d');
   const payload = await res.json();
   state.meta = payload.meta || {};
   state.publishers = withDerivedData(payload.publishers || []);
