@@ -1,9 +1,10 @@
 {
   "meta": {
     "generated_from": "data/publishers.json",
-    "publisher_count": 41,
+    "publisher_count": 51,
     "status_counts": {
-      "active": 41
+      "active": 41,
+      "prospect": 10
     },
     "safe_fields": [
       "id",
@@ -21,7 +22,8 @@
       "next_followup",
       "visibility",
       "created_at",
-      "updated_at"
+      "updated_at",
+      "segment"
     ],
     "share_policy": "No contact details, private terms, rejection reasons, or internal notes included."
   },
@@ -927,6 +929,256 @@
       "last_contact": null,
       "next_followup": null,
       "visibility": "team-safe",
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "giantessclub.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / giantess directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-042",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "giantessfan.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / giantess directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-043",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "giantessworld.net",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess stories",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / giantess directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-044",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "giantesscrew.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "giantess video",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / giantess directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-045",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "tubebdsm.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "bdsm tube",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / bdsm directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-046",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "bdsmup.net",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "bdsm tube",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / bdsm directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-047",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "femdom-pov.me",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom pov",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / femdom directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-048",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "clubdom.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom bdsm",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / femdom directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-049",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "theenglishmansion.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom bdsm",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / femdom directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-050",
+      "last_contact": null,
+      "next_followup": null,
+      "created_at": "2026-06-09",
+      "updated_at": "2026-06-09"
+    },
+    {
+      "domain": "kinkymistresses.com",
+      "status": "prospect",
+      "relationship_stage": "researching",
+      "fit_status": "unverified",
+      "deal_model": "unknown",
+      "placement_types": [
+        "banner"
+      ],
+      "niche": "femdom bdsm",
+      "geo": [],
+      "languages": [
+        "en"
+      ],
+      "source_labels": [
+        "similar-site research 2026-06-09 / femdom directory"
+      ],
+      "visibility": "team-safe",
+      "segment": "similar_sites",
+      "id": "pub-051",
+      "last_contact": null,
+      "next_followup": null,
       "created_at": "2026-06-09",
       "updated_at": "2026-06-09"
     }

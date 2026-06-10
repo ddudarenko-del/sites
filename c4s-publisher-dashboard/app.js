@@ -21,6 +21,12 @@ const VIEWS = [
     match: item => item.status === 'active' || item.relationship_stage === 'active_partner',
   },
   {
+    key: 'similar_sites',
+    label: 'Similar sites',
+    description: 'Research leads',
+    match: item => item.segment === 'similar_sites',
+  },
+  {
     key: 'banner',
     label: 'Banner inventory',
     description: 'Banner sites',
@@ -115,7 +121,9 @@ function badgeClass(value) {
   const key = slug(value);
   const allowed = new Set([
     'active',
+    'prospect',
     'approved',
+    'unverified',
     'active_partner',
     'negotiating',
     'contacted',
@@ -160,6 +168,7 @@ function sourceShortLabel(label) {
   if (!label) return 'Source';
   return label
     .replace(/Denis screenshots? 2026-06-09\s*\/\s*/i, '')
+    .replace(/similar-site research 2026-06-09\s*\/\s*/i, '')
     .replace(/publishers?/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
@@ -199,6 +208,7 @@ function derivePublisher(item) {
 function withDerivedData(rows) {
   return rows.map(item => ({
     ...item,
+    segment: item.segment || 'portfolio',
     placement_types: item.placement_types || [],
     source_labels: item.source_labels || [],
     geo: item.geo || [],

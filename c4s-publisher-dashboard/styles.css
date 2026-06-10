@@ -461,6 +461,8 @@ tbody tr:hover {
 .badge.negotiating,
 .badge.contacted,
 .badge.researching,
+.badge.prospect,
+.badge.unverified,
 .badge.waiting_reply,
 .badge.unknown,
 .badge.needs_enrichment {
