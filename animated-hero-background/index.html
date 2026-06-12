@@ -32,6 +32,7 @@
     }
 
     .hero__bg,
+    .hero__flow,
     .hero__glow,
     .hero__flare,
     .hero__arc,
@@ -53,6 +54,14 @@
       opacity: 0.95;
       transform-origin: center center;
       will-change: transform, opacity;
+    }
+
+    .hero__flow {
+      width: 100%;
+      height: 100%;
+      mix-blend-mode: screen;
+      opacity: 0.96;
+      z-index: 0;
     }
 
     .hero__glow {
@@ -240,6 +249,7 @@
     </svg>
 
     <div class="hero__bg"></div>
+    <canvas class="hero__flow" aria-hidden="true"></canvas>
     <div class="hero__glow"></div>
     <div class="hero__flare"></div>
     <div class="hero__arc"></div>
@@ -250,11 +260,11 @@
 
     <div class="hero__content">
       <div class="hero__copy">
-        <div class="hero__eyebrow">Animated hero background · HTML demo</div>
-        <h1>Soft loop.<br>Purple energy.</h1>
+        <div class="hero__eyebrow">Chaos → order · hero motion demo</div>
+        <h1>From noise<br>to signal.</h1>
         <p>
-          Демо фон для первого экрана: мягкий бесшовный loop, лёгкий warp,
-          пульсация центрального glow и деликатный sweep по правой дуге.
+          Здесь идея уже точнее: слева хаотичные линии собираются в центр,
+          а вправо выходят как упорядоченный направленный поток.
         </p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="https://github.com/ddudarenko-del/sites" target="_blank" rel="noreferrer">Open repo</a>
@@ -270,13 +280,151 @@
     if (!reduceMotion) {
       const LOOP = 12000;
       const bg = document.querySelector('.hero__bg');
+      const flow = document.querySelector('.hero__flow');
       const flare = document.querySelector('.hero__flare');
       const arc = document.querySelector('.hero__arc');
       const sweep = document.querySelector('.hero__sweep');
       const dust = document.querySelector('.hero__dust');
       const displacement = document.getElementById('heroDisplacement');
+      const ctx = flow.getContext('2d');
 
       const easeInOutSine = (x) => -(Math.cos(Math.PI * x) - 1) / 2;
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const quad = (a, b, c, t) => {
+        const mt = 1 - t;
+        return mt * mt * a + 2 * mt * t * b + t * t * c;
+      };
+
+      const lines = Array.from({ length: 96 }, (_, i) => {
+        const spread = i / 95;
+        const focus = 1 - Math.abs(spread - 0.5) * 2;
+        return {
+          seed: i * 0.73 + 1.2,
+          y0: 0.16 + spread * 0.68,
+          chaos: 24 + focus * 34,
+          width: 0.72 + focus * 1.2,
+          alpha: 0.06 + focus * 0.24,
+          band: (spread - 0.5) * 2
+        };
+      });
+
+      const chaosBits = Array.from({ length: 110 }, (_, i) => ({
+        seed: i * 0.47 + 0.9,
+        x: 0.05 + (i % 22) / 22 * 0.38,
+        y: 0.12 + Math.floor(i / 22) / 5 * 0.72,
+        len: 8 + (i % 7) * 2.1,
+        alpha: 0.045 + (i % 5) * 0.012
+      }));
+
+      function resizeFlow() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = flow.getBoundingClientRect();
+        flow.width = Math.round(rect.width * dpr);
+        flow.height = Math.round(rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawFlow(t, pulse, pulse2) {
+        const w = flow.clientWidth;
+        const h = flow.clientHeight;
+        if (!w || !h) return;
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        const centerX = w * 0.53;
+        const centerY = h * 0.555;
+        const cp1x = w * 0.73;
+        const cp1y = h * 0.40;
+        const endX = w * 0.96;
+        const endY = h * 0.14;
+
+        chaosBits.forEach((bit) => {
+          const drift = 0.5 + 0.5 * Math.sin(t * Math.PI * 2 + bit.seed * 2.7);
+          const x1 = bit.x * w + Math.sin(t * Math.PI * 2 + bit.seed) * 10;
+          const y1 = bit.y * h + Math.cos(t * Math.PI * 3 + bit.seed * 1.3) * 12;
+          const angle = Math.sin(t * Math.PI * 2 + bit.seed * 4.1) * 1.8 + bit.seed;
+          const x2 = x1 + Math.cos(angle) * bit.len * (0.7 + drift * 0.5);
+          const y2 = y1 + Math.sin(angle) * bit.len;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(198, 167, 255, ${(bit.alpha + drift * 0.03).toFixed(3)})`;
+          ctx.lineWidth = 0.75 + drift * 0.65;
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          if (bit.seed % 1 < 0.18) {
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(239, 227, 255, ${(bit.alpha + drift * 0.08).toFixed(3)})`;
+            ctx.arc(x1, y1, 0.8 + drift * 1.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+
+        lines.forEach((line, index) => {
+          ctx.beginPath();
+          const gradient = ctx.createLinearGradient(0, 0, w, 0);
+          gradient.addColorStop(0, `rgba(184, 148, 255, ${(line.alpha * 0.08).toFixed(3)})`);
+          gradient.addColorStop(0.38, `rgba(205, 176, 255, ${(line.alpha * 0.75).toFixed(3)})`);
+          gradient.addColorStop(0.54, `rgba(255, 238, 255, ${(line.alpha * 1.45).toFixed(3)})`);
+          gradient.addColorStop(1, `rgba(202, 170, 255, ${(line.alpha * 0.88).toFixed(3)})`);
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = line.width;
+
+          const points = 72;
+          for (let s = 0; s <= points; s++) {
+            const p = s / points;
+            const x = p * w;
+            let y;
+
+            if (p < 0.5) {
+              const lp = p / 0.5;
+              const startY = line.y0 * h;
+              const convergence = Math.pow(lp, 1.18);
+              const chaotic = (
+                Math.sin((lp * 8.8) + t * Math.PI * 2 + line.seed * 1.7) +
+                0.65 * Math.sin((lp * 15.6) - t * Math.PI * 4 + line.seed * 2.8) +
+                0.42 * Math.sin((lp * 24.0) + t * Math.PI * 6 + line.seed * 0.9)
+              );
+              const turbulence = Math.sin((lp * 5.2) - t * Math.PI * 3 + line.seed * 4.2) * line.band * 7;
+              const amp = line.chaos * Math.pow(1 - lp, 1.02);
+              const inwardBend = Math.sin(lp * Math.PI) * line.band * 12;
+              y = lerp(startY, centerY + line.band * 4, convergence) + chaotic * amp + turbulence * (1 - lp) + inwardBend;
+            } else {
+              const rp = (p - 0.5) / 0.5;
+              const orderedY = quad(centerY, cp1y, endY, rp);
+              const orderedX = quad(centerX, cp1x, endX, rp);
+              const tighten = 1 - Math.pow(rp, 0.72);
+              const microWave = Math.sin((rp * 9.5) + t * Math.PI * 2 + line.seed) * (1.6 + line.alpha * 3.5) * tighten;
+              const finalBand = line.band * (5.2 * tighten + 0.75);
+              y = orderedY + finalBand + microWave;
+              const orderedPull = orderedX - x;
+              if (Math.abs(orderedPull) > 0.1) {
+                // bias segment spacing toward the ordered arc without changing the actual sampled x too aggressively
+              }
+            }
+
+            if (s === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          if (index % 10 === 0) {
+            const pulseT = (t + line.seed * 0.13) % 1;
+            const pulseX = lerp(w * 0.04, centerX + w * 0.16, pulseT);
+            const pulseY = lerp(line.y0 * h, centerY + line.band * 4, Math.min(pulseT * 1.25, 1));
+            const r = 0.8 + pulse * 1.4;
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(239, 227, 255, ${(0.10 + pulse2 * 0.34).toFixed(3)})`;
+            ctx.arc(pulseX, pulseY, r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+      }
+
+      resizeFlow();
+      window.addEventListener('resize', resizeFlow);
 
       function tick(now) {
         const t = (now % LOOP) / LOOP;
@@ -285,17 +433,18 @@
         const pulse3 = 0.5 + 0.5 * Math.sin(t * Math.PI * 4 + Math.PI * 0.2);
         const smooth = easeInOutSine(t);
 
-        displacement.setAttribute('scale', (6.4 + pulse * 3.6).toFixed(2));
-        bg.style.transform = `scale(${1.028 + pulse * 0.012}) translate3d(${(pulse2 - 0.5) * 1.2}px, ${(pulse - 0.5) * 0.8}px, 0)`;
-        flare.style.opacity = (0.54 + pulse * 0.34).toFixed(3);
-        flare.style.transform = `scale(${0.98 + pulse * 0.08})`;
-        arc.style.opacity = (0.34 + pulse2 * 0.25).toFixed(3);
-        arc.style.transform = `translate3d(${(pulse - 0.5) * 7}px, ${(pulse2 - 0.5) * -8}px, 0) scale(${0.992 + pulse2 * 0.03})`;
-        sweep.style.opacity = (0.12 + pulse3 * 0.17).toFixed(3);
-        sweep.style.transform = `translateX(${(-26 + smooth * 52).toFixed(2)}%) rotate(-8deg)`;
-        dust.style.opacity = (0.045 + pulse3 * 0.03).toFixed(3);
-        dust.style.transform = `translate3d(${(pulse2 - 0.5) * 4}px, ${(pulse3 - 0.5) * -3}px, 0)`;
+        displacement.setAttribute('scale', (5.8 + pulse * 2.8).toFixed(2));
+        bg.style.transform = `scale(${1.022 + pulse * 0.01}) translate3d(${(pulse2 - 0.5) * 1.1}px, ${(pulse - 0.5) * 0.6}px, 0)`;
+        flare.style.opacity = (0.52 + pulse * 0.28).toFixed(3);
+        flare.style.transform = `scale(${0.985 + pulse * 0.065})`;
+        arc.style.opacity = (0.30 + pulse2 * 0.20).toFixed(3);
+        arc.style.transform = `translate3d(${(pulse - 0.5) * 5}px, ${(pulse2 - 0.5) * -6}px, 0) scale(${0.994 + pulse2 * 0.024})`;
+        sweep.style.opacity = (0.10 + pulse3 * 0.12).toFixed(3);
+        sweep.style.transform = `translateX(${(-20 + smooth * 40).toFixed(2)}%) rotate(-8deg)`;
+        dust.style.opacity = (0.04 + pulse3 * 0.025).toFixed(3);
+        dust.style.transform = `translate3d(${(pulse2 - 0.5) * 3}px, ${(pulse3 - 0.5) * -2}px, 0)`;
 
+        drawFlow(t, pulse, pulse2);
         requestAnimationFrame(tick);
       }
 
